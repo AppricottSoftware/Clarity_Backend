@@ -4,46 +4,42 @@ import os
 import settings
 from sqlalchemy.orm import sessionmaker
 from tabledef import *
+from User import mysqlUserDb
 
 import pymysql
 import json
 
 app = Flask(__name__)
 
-# Simple routine to run a query on a database and print the results:
-def printAllUsers(conn) :
-    print("Running printAllUsers")
-    cur = conn.cursor()
+# # Simple routine to run a query on a database and print the results:
+# def printAllUsers(conn) :
+#     print("Running printAllUsers")
+#     cur = conn.cursor()
 
-    cur.execute("select * from ClarityUsers")
-    for row in cur.fetchall():
-        print(row)
+#     cur.execute("select * from ClarityUsers")
+#     for row in cur.fetchall():
+#         print(row)
 
-# Returns true if user was successfully created
-# Return false if user was NOT successfully creatednot
-def registerUser(myConnection, userJson):
-    print("Running registerUser()")
-    # Grabs the user's credentials 
-    email = userJson["email"]
-    password = userJson["password"]
-
-    cur = myConnection.cursor()
-
-    addUser = "INSERT INTO `ClarityUsers` (`id`, `email`, `password`) VALUES (NULL, " + "\"" + email + "\"" + ", \"" + password + "\");"
-
-    cur.execute(addUser)
-    myConnection.commit()
+# # Returns true if user was successfully created
+# # Return false if user was NOT successfully creatednot
+# def registerUser(myConnection, userJson):
+#     print("Running registerUser()")
+#     # Grabs the user's credentials 
+#     email = userJson["email"]
+#     password = userJson["password"]
+#     cur = myConnection.cursor()
+#     addUser = "INSERT INTO `ClarityUsers` (`id`, `email`, `password`) VALUES (NULL, " + "\"" + email + "\"" + ", \"" + password + "\");"
+#     cur.execute(addUser)
+#     myConnection.commit()
 
 @app.route('/login', methods=['POST'])
 def do_admin_login():
     print("Invoking")
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
-        myConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
-        registerUser(myConnection, json_dict)
-        print("Verify the insert")
-        printAllUsers(myConnection)
-        myConnection.close()
+        newUser = mysqlUserDb(json_dict) # Dict will be parsed in constructor 
+        mysqlUserDb.registrationUser()
+        mysqlUserDb.terminateConnection()
         return jsonify(json_dict)
     else:
         return

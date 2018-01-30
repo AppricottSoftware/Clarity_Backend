@@ -5,14 +5,21 @@ import pymysql
 from Logger import Logger as Log
 
 class mysqlUserDb: 
+    """
+        \author: Patrick Le 
+        \brief: Creates a User object w/ db function for db interactions
+    """
 
-    # Constructor to initialize all params 
-    def __init__(self, username, email, password): 
-        self.username = username
-        self.email = email
-        self.password = password
+    def __init__(self, username, userJson): 
+        """The constructor"""
+        self.username = userJson["username"]
+        self.firstname = userJson["firstname"]
+        self.lastname = userJson["lastname"]
+        self.email = userJson["email"]
+        self.password = userJson["password"]
         self.logger = Log().getLogger()
 
+        # Testing db connection
         try: 
             self.logger.info("\nChecking MySQL connections...") 
             self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
@@ -20,9 +27,29 @@ class mysqlUserDb:
             self.cursor.execute('select version()')
             self.logger.info("Connection OK, proceeding.")
         except pymysql.Error as error:
-            self.logger.error("Error: %s" + error + "\nStop.\n)")
+            self.logger.error("Error:" + error + "\nStop.\n)")
 
-    def updatedb(self, db): 
+    def registrationUser(self): 
+        """\brief: adds or updates the db with the user"""
+        self.logger.info("\nUpdating Database")
+        try: 
+            # Checks if the user exists, if so then the username is
+            # TODO return a usernameTakenJson
+            userExists = self.cursor.execute("SELECT EXISTS(SELECT 1 FROM 'ClarityUsers' WHERE username = 'username')")
+            if userExists is False: 
+                addUser = "INSERT INTO `ClarityUsers` (`id`, `username`, `email`, `password`, `firstname`, `lastname`) VALUES (NULL, " + "\"" + self.username + "\", \"" + self.email + "\", \"" + self.password +  "\", \"" + self.firstname +  "\", \"" + self.lastname + "\");"
+                self.cursor.execute(addUser)
+                self.dbConnection.commit() # Required to commit changes to the actual database
+                self.logger.info("Successful registration user: " + self.username)
+            else: 
+                self.logger.warning("Unsuccessful registration user: " + self.username + " --- User already exists")
+                return
+        except Warning as warn: 
+            self.logger.error("Warning: " + warn + "\nStop.\n")
+
+    def terminateConnection(self): 
+        self.dbConnection.close()
+
 
 
 
