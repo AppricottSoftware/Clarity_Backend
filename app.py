@@ -3,7 +3,6 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os
 import settings
 from sqlalchemy.orm import sessionmaker
-from tabledef import *
 from User import mysqlUserDb
 
 import pymysql
@@ -38,8 +37,8 @@ def do_admin_login():
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         newUser = mysqlUserDb(json_dict) # Dict will be parsed in constructor 
-        mysqlUserDb.registrationUser()
-        mysqlUserDb.terminateConnection()
+        newUser.registrationUser()
+        newUser.terminateConnection()
         return jsonify(json_dict)
     else:
         return
