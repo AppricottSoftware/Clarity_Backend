@@ -25,6 +25,7 @@ class mysqlUserDb:
             self.cursor = self.dbConnection.cursor()
             self.cursor.execute('select version()')
             self.logger.info("Connection OK, proceeding.")
+            self.dbConnection.close()
         except pymysql.Error as error:
             self.logger.error("Error:" + str(error) + "\nStop.\n)")
 
@@ -34,7 +35,7 @@ class mysqlUserDb:
         try: 
             # Checks if the user exists, if so then the username is
             # TODO return a usernameTakenJson
-            
+            self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             self.cursor = self.dbConnection.cursor()
             self.cursor.execute("SELECT EXISTS(SELECT 1 FROM 'ClarityUsers' WHERE username = 'username')")
             addUser = "INSERT INTO `ClarityUsers` (`id`, `username`, `email`, `password`, `firstname`, `lastname`) VALUES (NULL, " + "\"" + self.username + "\", \"" + self.email + "\", \"" + self.password +  "\", \"" + self.firstname +  "\", \"" + self.lastname + "\");"
