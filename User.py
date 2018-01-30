@@ -12,12 +12,20 @@ class mysqlUserDb:
 
     def __init__(self, userJson): 
         """The constructor"""
-        self.username = userJson["username"]
-        self.firstname = userJson["firstname"]
-        self.lastname = userJson["lastname"]
-        self.email = userJson["email"]
-        self.password = userJson["password"]
-        self.logger = Log().getLogger()
+        if 'username' in userJson: 
+            self.username = userJson["username"]
+            self.firstname = userJson["firstname"]
+            self.lastname = userJson["lastname"]
+            self.email = userJson["email"]
+            self.password = userJson["password"]
+            self.logger = Log().getLogger()
+        else: 
+            self.username = None
+            self.firstname = None
+            self.lastname = None
+            self.email = userJson["email"]
+            self.password = userJson["password"]
+            self.logger = Log().getLogger()
         # Testing db connection
         try: 
             self.logger.info("\nChecking MySQL connections...") 

@@ -2,7 +2,6 @@ from flask import Flask
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-from sqlalchemy.orm import sessionmaker
 from User import mysqlUserDb
 
 import pymysql
