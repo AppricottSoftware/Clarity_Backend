@@ -37,15 +37,41 @@ class mysqlUserDb:
             # TODO return a usernameTakenJson
             self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             self.cursor = self.dbConnection.cursor()
-            self.cursor.execute("SELECT EXISTS(SELECT 1 FROM 'ClarityUsers' WHERE username = 'username')")
             addUser = "INSERT INTO `ClarityUsers` (`id`, `username`, `email`, `password`, `firstname`, `lastname`) VALUES (NULL, " + "\"" + self.username + "\", \"" + self.email + "\", \"" + self.password +  "\", \"" + self.firstname +  "\", \"" + self.lastname + "\");"
             self.cursor.execute(addUser)
             self.dbConnection.commit() # Required to commit changes to the actual database
             self.logger.info("Successful registration user: " + self.username)
+            self.dbConnection.close()
+            self.logger.info("Successful connection termination")
             return True 
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
 
-    def terminateConnection(self): 
-        self.dbConnection.close()
+    def getUserPassword(self) :
+        print("Running getUserPassword()")
+        checkUser = "Select password from ClarityUsers where email=\"" + self.email + "\";"
+        self.cursor.execute(checkUser)
+
+        self.cursor.execute(checkUser)
+        result = self.cursor.fetchall()
+        if result : 
+            print("Found user... Returning User") 
+            return result[0][0]
+        else : 
+            return 0
+
+    def validateUser(self): 
+        self.logger.info("\nValidating User")
+        try: 
+            self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+            self.cursor = self.dbConnection.cursor()
+            userRealPassword = self.getUserPassword()
+            if self.password == userRealPassword: 
+                print("Authenication Successful")
+                return True
+            else: 
+                print("Authenication Failure") 
+                return False
+        except Warning as warn: 
+            self.logger.error("Warning: " + str(warn) + "\nStop.\n")
 
