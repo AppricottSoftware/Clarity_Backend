@@ -1,2 +1,5 @@
 requests
 python-decouple
+logging
+pymysql
+flask
