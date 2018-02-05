@@ -7,7 +7,7 @@ class Logger:
         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
         hdlr.setFormatter(formatter)
         logger.addHandler(hdlr)
-        logger.setLevel(logging.WARNING)
+        logger.setLevel(logging.DEBUG)
         self.logger = logger
 
     def getLogger(self): 

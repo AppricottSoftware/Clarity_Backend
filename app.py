@@ -4,10 +4,18 @@ import os
 import settings
 from User import mysqlUserDb
 
+import cgitb
+cgitb.enable()
+
 import pymysql
 import json
 
 app = Flask(__name__)
+
+@app.route('/') 
+def do_admin_root(): 
+    print("HELLO WORLD")
+
 
 @app.route('/register', methods=['POST'])
 def do_admin_register():
@@ -26,10 +34,12 @@ def do_admin_login():
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         newUser = mysqlUserDb(json_dict) # Dict will be parsed in constructor 
-        newUser.validateUser()
-        return jsonify(json_dict) #TODO return a better dictionary with return code
+	if newUser.validateUser():
+	    return jsonify({u'auth':u'success'}) 
+        return jsonify({u'auth':u'failure'})
     else:
         return
+
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
