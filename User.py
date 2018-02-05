@@ -42,7 +42,7 @@ class mysqlUserDb:
             addUser = "INSERT INTO `users` (`email`, `password`) VALUES (\"" + self.email + "\", \"" + self.password +  "\");"
             self.cursor.execute(addUser)
             self.dbConnection.commit() # Required to commit changes to the actual database
-            self.logger.info("Successful registration user: " + self.username)
+            self.logger.info("Successful registration user: " + self.email)
             self.dbConnection.close()
             self.logger.info("Successful connection termination")
             return True 
