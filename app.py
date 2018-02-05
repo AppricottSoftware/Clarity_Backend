@@ -1,4 +1,3 @@
-from flask import Flask
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
@@ -34,11 +33,10 @@ def do_admin_login():
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         newUser = mysqlUserDb(json_dict) # Dict will be parsed in constructor 
-	if newUser.validateUser():
+	if newUser.ccz():
 	    return jsonify({u'auth':u'success'}) 
-        return jsonify({u'auth':u'failure'})
     else:
-        return
+        return jsonify({u'auth':u'failure'})
 
 
 if __name__ == "__main__":
