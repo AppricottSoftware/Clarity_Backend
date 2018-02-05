@@ -13,16 +13,10 @@ class mysqlUserDb:
     def __init__(self, userJson): 
         """The constructor"""
         if 'username' in userJson: 
-            self.username = userJson["username"]
-            self.firstname = userJson["firstname"]
-            self.lastname = userJson["lastname"]
             self.email = userJson["email"]
             self.password = userJson["password"]
             self.logger = Log().getLogger()
         else: 
-            self.username = None
-            self.firstname = None
-            self.lastname = None
             self.email = userJson["email"]
             self.password = userJson["password"]
             self.logger = Log().getLogger()
@@ -45,10 +39,10 @@ class mysqlUserDb:
             # TODO return a usernameTakenJson
             self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             self.cursor = self.dbConnection.cursor()
-            addUser = "INSERT INTO `ClarityUsers` (`id`, `username`, `email`, `password`, `firstname`, `lastname`) VALUES (NULL, " + "\"" + self.username + "\", \"" + self.email + "\", \"" + self.password +  "\", \"" + self.firstname +  "\", \"" + self.lastname + "\");"
+            addUser = "INSERT INTO `users` (`email`, `password`) VALUES (\"" + self.email + "\", \"" + self.password +  "\");"
             self.cursor.execute(addUser)
             self.dbConnection.commit() # Required to commit changes to the actual database
-            self.logger.info("Successful registration user: " + self.username)
+            self.logger.info("Successful registration user: " + self.email)
             self.dbConnection.close()
             self.logger.info("Successful connection termination")
             return True 
@@ -57,13 +51,13 @@ class mysqlUserDb:
 
     def getUserPassword(self) :
         print("Running getUserPassword()")
-        checkUser = "Select password from ClarityUsers where email=\"" + self.email + "\";"
+        checkUser = "Select password from users where email=\"" + self.email + "\";"
         self.cursor.execute(checkUser)
 
         self.cursor.execute(checkUser)
         result = self.cursor.fetchall()
         if result : 
-            print("Found user... Returning User") 
+            print("Found user... Returning User")
             return result[0][0]
         else : 
             return 0
