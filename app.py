@@ -33,7 +33,7 @@ def do_admin_login():
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         newUser = mysqlUserDb(json_dict) # Dict will be parsed in constructor 
-	if newUser.ccz():
+	if newUser.validateUser():
 	    return jsonify({u'auth':u'success'}) 
     else:
         return jsonify({u'auth':u'failure'})
