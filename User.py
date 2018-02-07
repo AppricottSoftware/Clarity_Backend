@@ -1,4 +1,3 @@
-import os
 import json
 import settings
 import pymysql
@@ -20,16 +19,24 @@ class mysqlUserDb:
             self.email = userJson["email"]
             self.password = userJson["password"]
             self.logger = Log().getLogger()
-        # Testing db connection
+
+    def getUserUid(self):
+        self.logger.info("\nFinding User Uid, " + self.email + " in database")
         try: 
-            self.logger.info("\nChecking MySQL connections...") 
             self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             self.cursor = self.dbConnection.cursor()
-            self.cursor.execute('select version()')
-            self.logger.info("Connection OK, proceeding.")
-            self.dbConnection.close()
-        except pymysql.Error as error:
-            self.logger.error("Error:" + str(error) + "\nStop.\n)")
+            checkUser = "SELECT uid FROM users WHERE email=\"" + self.email + "\";"
+            self.cursor.execute(checkUser)
+            result = self.cursor.fetchall()
+            if result : 
+                self.logger.info("Found user... Returning User")
+                return result[0][0]
+            else : 
+                self.logger.warn("Could not find user " + self.email)
+                return 0
+        except Warning as warn:
+            self.logger.error("Waring: " + str(warn) + "\nStop\n")
+
 
     def registrationUser(self): 
         """\brief: adds or updates the db with the user"""
@@ -39,15 +46,16 @@ class mysqlUserDb:
             # TODO return a usernameTakenJson
             self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             self.cursor = self.dbConnection.cursor()
-            addUser = "INSERT INTO `users` (`email`, `password`) VALUES (\"" + self.email + "\", \"" + self.password +  "\");"
-            self.cursor.execute(addUser)
+            command = "INSERT INTO `users` (`email`, `password`) VALUES (\"" + self.email + "\", \"" + self.password +  "\");"
+            self.cursor.execute(command)
             self.dbConnection.commit() # Required to commit changes to the actual database
             self.logger.info("Successful registration user: " + self.email)
             self.dbConnection.close()
             self.logger.info("Successful connection termination")
-            return True 
+            return self.getUserUid() # Grabbing the user's Uid 
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
+            return None
 
     def getUserPassword(self) :
         self.logger.info("Running getUserPassword()")
@@ -60,6 +68,7 @@ class mysqlUserDb:
             self.logger.info("Found user... Returning User")
             return result[0][0]
         else : 
+            self.logger.warn("Could not find user " + self.email)
             return 0
 
     def validateUser(self): 
