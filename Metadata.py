@@ -2,7 +2,7 @@ from Logger import Logger as Log
 import settings
 import pymysql
 
-class MetaData: 
+class Metadata: 
     """ 
         \author: Patrick Le
         \brief: Class to manage Clarity's Metadata objects
@@ -35,12 +35,12 @@ class MetaData:
         try: 
             dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             cursor = dbConnection.cursor()
-            command = "INSERT INTO `channel_metadata` (`cid`) VALUES (\"" + str(self.cid)"\");"
+            command = "INSERT INTO `channel_metadata` (`cid`) VALUES (\"" + str(self.cid) + "\");"
             cursor.execute(command)
             dbConnection.commit() # Required to commit changes to the actual database
             dbConnection.close()
             self.logger.info("Successful connection termination")
-            return self.getChannelCid() # Grabbing the user's Uid 
+            return self.getChannelMetadataMid() # Grabbing the user's Uid 
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return None

@@ -37,7 +37,7 @@ class Channel:
         try: 
             dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             cursor = dbConnection.cursor()
-            command = "INSERT INTO `channel` (`uid`, `name`) VALUES (\"" + str(self.uid) + "\");"
+            command = "INSERT INTO `channel` (`uid`) VALUES (\"" + str(self.uid) + "\");"
             cursor.execute(command)
             dbConnection.commit() # Required to commit changes to the actual database
             dbConnection.close()

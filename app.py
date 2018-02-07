@@ -39,7 +39,7 @@ def do_admin_register():
         if newCid is None: 
             return jsonify({u'register': u'failure'})
         newMetadata = Metadata(newCid)
-        res = newMetadata.initializeUserMetadata()
+        res = newMetadata.initializeChannelMetadata()
 
         print("Success: ", res)
 
