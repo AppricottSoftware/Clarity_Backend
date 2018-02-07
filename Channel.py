@@ -10,16 +10,15 @@ class Channel:
 
     def __init__(self, uid):
         """The constructor"""
-        self.uid = uid
+        self.uid = str(uid)
         self.logger = Log().getLogger()
 
-
     def getChannelCid(self): 
-        self.logger.info("\nFinding Channel Uid, UserID: " + self.uid + " in database")
+        self.logger.info("\nFinding Channel Uid, UserID: " + str(self.uid) + " in database")
         try: 
             self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             self.cursor = self.dbConnection.cursor()
-            checkUser = "SELECT cid INTO channel where uid=\"" + self.uid + "\";"
+            checkUser = "SELECT cid INTO channel where uid=\"" + str(self.uid) + "\";"
             self.cursor.execute(checkUser)
             result = self.cursor.fetchall()
             if result : 
@@ -33,11 +32,11 @@ class Channel:
 
 
     def initializeUserChannel(self): 
-        self.logger.info("\nInitializing User's Channel Instance, uid: " + self.uid)
+        self.logger.info("\nInitializing User's Channel Instance, uid: " + str(self.uid))
         try: 
             dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             cursor = dbConnection.cursor()
-            command = "INSERT INTO `channel` (`uid`, `name`) VALUES (\"" + self.uid + "\", \"First Channel\");"
+            command = "INSERT INTO `channel` (`uid`, `name`) VALUES (\"" + str(self.uid) + "\", \"First Channel\");"
             cursor.execute(command)
             dbConnection.commit() # Required to commit changes to the actual database
             dbConnection.close()
