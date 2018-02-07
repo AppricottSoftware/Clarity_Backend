@@ -3,6 +3,7 @@ import os
 import settings
 from User import mysqlUserDb
 from Channel import Channel
+from Metadata import Metadata
 
 import cgitb
 cgitb.enable()
@@ -34,6 +35,13 @@ def do_admin_register():
         newChannel = Channel(newUid)
         newCid = newChannel.initializeUserChannel()
 
+        # setting up metadata tables
+        if newCid is None: 
+            return jsonify({u'register': u'failure'})
+        newMetadata = Metadata(newCid)
+        res = newMetadata.initializeUserMetadata()
+
+        print("Success: ", res)
 
         # TODO return a better dictionary with return code
         return jsonify(json_dict)

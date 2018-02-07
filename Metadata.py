@@ -2,23 +2,22 @@ from Logger import Logger as Log
 import settings
 import pymysql
 
-class Channel: 
+class MetaData: 
     """ 
         \author: Patrick Le
-        \brief: Class to manage Clarity's Channels objects
+        \brief: Class to manage Clarity's Metadata objects
     """
-
-    def __init__(self, uid):
+    def __init__(self, cid):
         """The constructor"""
-        self.uid = str(uid)
+        self.cid = str(cid)
         self.logger = Log().getLogger()
 
-    def getChannelCid(self): 
-        self.logger.info("\nFinding Channel Uid, UserID: " + str(self.uid) + " in database")
+    def getChannelMetadataMid(self): 
+        self.logger.info("\nFinding Channel Metadata, UserID: " + str(self.cid) + " in database")
         try: 
             dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             cursor = dbConnection.cursor()
-            checkUser = "SELECT cid FROM channel where uid=\"" + str(self.uid) + "\";"
+            checkUser = "SELECT mid FROM channel_metadata where cid=\"" + str(self.cid) + "\";"
             cursor.execute(checkUser)
             result = cursor.fetchall()
             
@@ -31,13 +30,12 @@ class Channel:
         except Warning as warn:
             self.logger.error("Waring: " + str(warn) + "\nStop\n")
 
-
-    def initializeUserChannel(self):
-        self.logger.info("\nInitializing User's Channel Instance, uid: " + str(self.uid))
+    def initializeChannelMetadata(self):
+        self.logger.info("\nInitializing User's Channel's Metadata Instance, cid: " + str(self.cid))
         try: 
             dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             cursor = dbConnection.cursor()
-            command = "INSERT INTO `channel` (`uid`, `name`) VALUES (\"" + str(self.uid) + "\");"
+            command = "INSERT INTO `channel_metadata` (`cid`) VALUES (\"" + str(self.cid)"\");"
             cursor.execute(command)
             dbConnection.commit() # Required to commit changes to the actual database
             dbConnection.close()
@@ -46,6 +44,3 @@ class Channel:
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return None
-
-
-
