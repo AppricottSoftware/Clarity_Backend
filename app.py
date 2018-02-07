@@ -35,8 +35,8 @@ def do_admin_login():
         newUser = mysqlUserDb(json_dict) # Dict will be parsed in constructor 
 	if newUser.validateUser():
 	    return jsonify({u'auth':u'success'}) 
-    else:
-        return jsonify({u'auth':u'failure'})
+        else:
+            return jsonify({u'auth':u'failure'})
 
 
 if __name__ == "__main__":

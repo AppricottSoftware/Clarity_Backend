@@ -50,14 +50,14 @@ class mysqlUserDb:
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
 
     def getUserPassword(self) :
-        print("Running getUserPassword()")
+        self.logger.info("Running getUserPassword()")
         checkUser = "Select password from users where email=\"" + self.email + "\";"
         self.cursor.execute(checkUser)
 
         self.cursor.execute(checkUser)
         result = self.cursor.fetchall()
         if result : 
-            print("Found user... Returning User")
+            self.logger.info("Found user... Returning User")
             return result[0][0]
         else : 
             return 0
@@ -69,10 +69,10 @@ class mysqlUserDb:
             self.cursor = self.dbConnection.cursor()
             userRealPassword = self.getUserPassword()
             if self.password == userRealPassword: 
-                print("Authenication Successful")
+                self.logger.info("Authenication Successful")
                 return True
             else: 
-                print("Authenication Failure") 
+                self.logger.info("Authenication Failure") 
                 return False
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
