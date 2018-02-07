@@ -16,11 +16,12 @@ class Channel:
     def getChannelCid(self): 
         self.logger.info("\nFinding Channel Uid, UserID: " + str(self.uid) + " in database")
         try: 
-            self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
-            self.cursor = self.dbConnection.cursor()
-            checkUser = "SELECT cid INTO channel where uid=\"" + str(self.uid) + "\";"
-            self.cursor.execute(checkUser)
-            result = self.cursor.fetchall()
+            dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+            cursor = dbConnection.cursor()
+            checkUser = "SELECT cid FROM channel where uid=\"" + str(self.uid) + "\";"
+            cursor.execute(checkUser)
+            result = cursor.fetchall()
+            
             if result : 
                 self.logger.info("Found user... Returning User")
                 return result[0][0]
@@ -31,7 +32,7 @@ class Channel:
             self.logger.error("Waring: " + str(warn) + "\nStop\n")
 
 
-    def initializeUserChannel(self): 
+    def initializeUserChannel(self):
         self.logger.info("\nInitializing User's Channel Instance, uid: " + str(self.uid))
         try: 
             dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )

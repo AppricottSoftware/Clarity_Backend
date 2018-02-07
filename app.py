@@ -2,7 +2,7 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os
 import settings
 from User import mysqlUserDb
-import Channel
+from Channel import Channel
 
 import cgitb
 cgitb.enable()
@@ -34,7 +34,6 @@ def do_admin_register():
         newChannel = Channel(newUid)
         newCid = newChannel.initializeUserChannel()
 
-        print("Success")
 
         # TODO return a better dictionary with return code
         return jsonify(json_dict)
