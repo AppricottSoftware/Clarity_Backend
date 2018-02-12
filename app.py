@@ -30,16 +30,16 @@ def do_admin_register():
         newUid = newUser.registrationUser()
 
         # setting up channel tables
-        if newUid is None: 
-            return jsonify({u'register': u'failure'})
-        newChannel = Channel(newUid)
-        newCid = newChannel.initializeUserChannel()
-
-        # setting up metadata tables
-        if newCid is None: 
-            return jsonify({u'register': u'failure'})
-        newMetadata = Metadata(newCid)
-        res = newMetadata.initializeChannelMetadata()
+#        if newUid is None: 
+#            return jsonify({u'register': u'failure'})
+#        newChannel = Channel(newUid)
+#        newCid = newChannel.initializeUserChannel()
+#
+#        # setting up metadata tables
+#        if newCid is None: 
+#            return jsonify({u'register': u'failure'})
+#        newMetadata = Metadata(newCid)
+#        res = newMetadata.initializeChannelMetadata()
 
         print("Success: ", res)
 
@@ -65,7 +65,7 @@ def do_admin_login():
 @app.route('/GET/channels', methods=['POST'])
 def GETChannels():
     print("Invoking admin GET Channels, IP:", request.remote_addr)
-
+        
 
 
 
@@ -74,6 +74,9 @@ def GETChannels():
 @app.route('/PUT/channels', methods=['POST'])
 def PUTChannels():
     print("Invoking admin PUT Channels, IP:", request.remote_addr)
+    if request.method == "POST":
+        json_dict = request.get_json()
+
 
 
 if __name__ == "__main__":
