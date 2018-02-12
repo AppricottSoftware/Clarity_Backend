@@ -65,7 +65,7 @@ def do_admin_login():
 @app.route('/GET/channels', methods=['POST'])
 def GETChannels():
     print("Invoking admin GET Channels, IP:", request.remote_addr)
-        
+            
 
 
 
@@ -74,8 +74,6 @@ def GETChannels():
 @app.route('/PUT/channels', methods=['POST'])
 def PUTChannels():
     print("Invoking admin PUT Channels, IP:", request.remote_addr)
-    if request.method == "POST":
-        json_dict = request.get_json()
 
 
 

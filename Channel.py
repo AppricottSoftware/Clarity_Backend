@@ -4,14 +4,14 @@ import pymysql
 
 class Channel: 
     """ 
-        \author: Patrick Le
+        \authors: Patrick Le, Guthrie Price
         \brief: Class to manage Clarity's Channels objects
     """
 
-    def __init__(self, uid, genres, channelName=None):
+    def __init__(self, uid, genres, title, image=None):
         """The constructor"""
         self.uid = str(uid)
-        self.channelName = channelName
+        self.title = title 
         self.genres = genres
         self.logger = Log().getLogger()
 
@@ -39,14 +39,14 @@ class Channel:
         try: 
             dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             cursor = dbConnection.cursor()
-            if (self.channelName is not None):
-                query = ("INSERT INTO `channel` (`uid`, `name`) "
-                           "VALUES (\"{}\", \"{}\");"
-                          ).format(self.uid, self.name)
+            if (self.image is not None):
+                query = ("INSERT INTO `channel` (`uid`, `title`, `image`) "
+                         "VALUES (\"{}\"), (\"{}\"), (\"{}\");"
+                        ).format(self.uid, self.title, self.image)
             else:
-                query = ("INSERT INTO `channel` (`uid`) "
-                           "VALUES (\"{}\");"
-                          ).format(self.uid)
+                query = ("INSERT INTO `channel` (`uid`, `title`) "
+                         "VALUES (\"{}\"), (\"{}\");"
+                        ).format(self.uid, self.title)
             cursor.execute(query)
             cid = self.getChannelCid()
             query = ("INSERT INTO `channel_metadata` (`mid`, `cid`) "
