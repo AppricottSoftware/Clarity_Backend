@@ -3,7 +3,7 @@ import settings
 import pymysql
 from Logger import Logger as Log
 
-class mysqlUserDb: 
+class User: 
     """
         \author: Patrick Le 
         \brief: Creates a User object w/ db function for db interactions
