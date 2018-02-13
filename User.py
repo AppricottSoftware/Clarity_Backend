@@ -37,21 +37,18 @@ class User:
         try: 
             self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             self.cursor = self.dbConnection.cursor()
-            # checkUser = "SELECT email FROM users WHERE email=\"" + self.email + "\";" # check for dups command
             checkUser = "SELECT EXISTS(SELECT 1 FROM users WHERE email = \"" + self.email + "\");"
             self.cursor.execute(checkUser)
             result = self.cursor.fetchall()[0][0]
-            self.logger.info("result=" + str(result))
             if result is 1: 
-                self.logger.info("Invalid registration... User already exists")
+                self.logger.warn("Invalid registration... User already exists")
                 return False
             else : 
-                self.logger.warn("Could not find user " + self.email)
+                self.logger.info("User does not exists, Executing Registration code" + self.email)
                 return True
         except Warning as warn:
             self.logger.error("Waring: " + str(warn) + "\nStop\n")
             return False
-
 
     def registrationUser(self): 
         """\brief: adds or updates the db with the user"""

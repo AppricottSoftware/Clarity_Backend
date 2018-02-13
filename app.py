@@ -30,9 +30,8 @@ def do_admin_register():
         if newUser.checkDuplicateUsers() is False: 
             return jsonify({u'userId': u'-1'})
 
-
+        # Registering the user to the db
         newUid = newUser.registrationUser()
-        # TODO return a better dictionary with return code
         return jsonify({u'userId': u'newUid'})
     else:
         return jsonify({u'userId': u'NotPostRequest'})
