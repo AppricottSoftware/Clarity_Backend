@@ -32,7 +32,7 @@ def do_admin_register():
 
         # Registering the user to the db
         newUid = newUser.registrationUser()
-        return jsonify({u'userId': u'newUid'})
+        return jsonify({u'userId': newUid})
     else:
         return jsonify({u'userId': u'NotPostRequest'})
 
@@ -43,11 +43,13 @@ def do_admin_login():
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         newUser = User(json_dict)  # Dict will be parsed in constructor
-
-        if newUser.validateUser(): 
-            return jsonify({u'auth': u'success'})
+        uid = newUser.getUserUid()
+        if newUser.validateUser() is True: 
+            print("HERE")
+            return jsonify({u'userId': uid})
         else: 
-            return jsonify({u'auth': u'failure'})
+            print("ERROR")
+            return jsonify({u'auth': u'-1'})
 
 
 @app.route('/GET/channels', methods=['POST'])

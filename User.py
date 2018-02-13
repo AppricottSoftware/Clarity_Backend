@@ -97,4 +97,5 @@ class User:
                 return False
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
+            return False
 
