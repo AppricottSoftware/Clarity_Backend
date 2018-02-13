@@ -28,21 +28,6 @@ def do_admin_register():
         json_dict = request.get_json()  # Creates into a dictionary
         newUser = mysqlUserDb(json_dict)  # Dict will be parsed in constructor
         newUid = newUser.registrationUser()
-
-        # setting up channel tables
-#        if newUid is None: 
-#            return jsonify({u'register': u'failure'})
-#        newChannel = Channel(newUid)
-#        newCid = newChannel.initializeUserChannel()
-#
-#        # setting up metadata tables
-#        if newCid is None: 
-#            return jsonify({u'register': u'failure'})
-#        newMetadata = Metadata(newCid)
-#        res = newMetadata.initializeChannelMetadata()
-
-        print("Success: ", res)
-
         # TODO return a better dictionary with return code
         return jsonify(json_dict)
     else:
