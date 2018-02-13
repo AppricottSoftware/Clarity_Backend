@@ -26,7 +26,6 @@ def do_admin_register():
         json_dict = request.get_json()  # Creates into a dictionary
         newUser = User(json_dict)  # Dict will be parsed in constructor
         newUid = newUser.registrationUser()
-
         # TODO return a better dictionary with return code
         return jsonify(json_dict)
     else:
@@ -53,8 +52,6 @@ def GETChannels():
 @app.route('/PUT/channels', methods=['POST'])
 def PUTChannels():
     print("Invoking admin PUT Channels, IP:", request.remote_addr)
-    if request.method == "POST":
-        json_dict = request.get_json()
 
 
 @app.route('/PUT/channel/Likes', methods=['POST'])
