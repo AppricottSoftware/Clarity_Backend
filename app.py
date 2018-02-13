@@ -25,11 +25,17 @@ def do_admin_register():
         # registration to user table
         json_dict = request.get_json()  # Creates into a dictionary
         newUser = User(json_dict)  # Dict will be parsed in constructor
+
+        # Checking for duplicated users
+        if newUser.checkDuplicateUsers() is False: 
+            return jsonify({u'userId': u'-1'})
+
+
         newUid = newUser.registrationUser()
         # TODO return a better dictionary with return code
-        return jsonify(json_dict)
+        return jsonify({u'userId': u'newUid'})
     else:
-        return jsonify({u'register': u'failure'})
+        return jsonify({u'userId': u'NotPostRequest'})
 
 
 @app.route('/login', methods=['POST'])
@@ -47,24 +53,19 @@ def do_admin_login():
 
 @app.route('/GET/channels', methods=['POST'])
 def GETChannels():
-    print("Invoking admin GET Channels, IP:", request.remote_addr)
+    print("Invoking admin /GET/channels, IP:", request.remote_addr)
 
 @app.route('/PUT/channels', methods=['POST'])
 def PUTChannels():
-    print("Invoking admin PUT Channels, IP:", request.remote_addr)
+    print("Invoking admin /PUT/channels, IP:", request.remote_addr)
 
-
-@app.route('/PUT/channel/Likes', methods=['POST'])
-def PUTChannels():
+@app.route('/PUT/channels/Likes', methods=['POST'])
+def PUTChannelsLikes():
     print("Invoking admin /PUT/channel/Likes, IP:", request.remote_addr)
-    if request.method == "POST":
-        json_dict = request.get_json()
 
-@app.route('/PUT/channel/Dislikes', methods=['POST'])
-def PUTChannels():
+@app.route('/PUT/channels/Dislikes', methods=['POST'])
+def PUTChannelsDislikes():
     print("Invoking admin /PUT/channel/Dislikes, IP:", request.remote_addr)
-    if request.method == "POST":
-        json_dict = request.get_json()
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)

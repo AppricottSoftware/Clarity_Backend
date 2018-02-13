@@ -11,14 +11,9 @@ class User:
 
     def __init__(self, userJson): 
         """The constructor"""
-        if 'username' in userJson: 
-            self.email = userJson["email"]
-            self.password = userJson["password"]
-            self.logger = Log().getLogger()
-        else: 
-            self.email = userJson["email"]
-            self.password = userJson["password"]
-            self.logger = Log().getLogger()
+        self.email = userJson["email"]
+        self.password = userJson["password"]
+        self.logger = Log().getLogger()
 
     def getUserUid(self):
         self.logger.info("\nFinding User Uid, " + self.email + " in database")
@@ -36,6 +31,26 @@ class User:
                 return 0
         except Warning as warn:
             self.logger.error("Waring: " + str(warn) + "\nStop\n")
+
+    def checkDuplicateUsers(self): 
+        self.logger.info("\nSearching for dup emails: " + self.email)
+        try: 
+            self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+            self.cursor = self.dbConnection.cursor()
+            # checkUser = "SELECT email FROM users WHERE email=\"" + self.email + "\";" # check for dups command
+            checkUser = "SELECT EXISTS(SELECT 1 FROM users WHERE email = \"" + self.email + "\");"
+            self.cursor.execute(checkUser)
+            result = self.cursor.fetchall()[0][0]
+            self.logger.info("result=" + str(result))
+            if result is 1: 
+                self.logger.info("Invalid registration... User already exists")
+                return False
+            else : 
+                self.logger.warn("Could not find user " + self.email)
+                return True
+        except Warning as warn:
+            self.logger.error("Waring: " + str(warn) + "\nStop\n")
+            return False
 
 
     def registrationUser(self): 
