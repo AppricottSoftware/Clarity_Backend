@@ -49,7 +49,7 @@ def do_admin_login():
             return jsonify({u'userId': uid})
         else: 
             print("ERROR")
-            return jsonify({u'auth': -1})
+            return jsonify({u'userId': -1})
 
 
 @app.route('/GET/channels', methods=['POST'])
@@ -63,6 +63,7 @@ def PUTChannels():
 @app.route('/PUT/channels/Likes', methods=['POST'])
 def PUTChannelsLikes():
     print("Invoking admin /PUT/channel/Likes, IP:", request.remote_addr)
+
 
 @app.route('/PUT/channels/Dislikes', methods=['POST'])
 def PUTChannelsDislikes():
