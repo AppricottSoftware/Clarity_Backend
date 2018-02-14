@@ -89,6 +89,8 @@ class User:
             self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             self.cursor = self.dbConnection.cursor()
             userRealPassword = self.getUserPassword()
+            print("UserRealPassword: " + userRealPassword)
+            print("CurrentPassword: " + self.password)
             if self.password == userRealPassword: 
                 self.logger.info("Authenication Successful")
                 return True

@@ -28,13 +28,13 @@ def do_admin_register():
 
         # Checking for duplicated users
         if newUser.checkDuplicateUsers() is False: 
-            return jsonify({u'userId': u'-1'})
+            return jsonify({u'userId': -1})
 
         # Registering the user to the db
         newUid = newUser.registrationUser()
         return jsonify({u'userId': newUid})
     else:
-        return jsonify({u'userId': u'NotPostRequest'})
+        return jsonify({u'userId': -1})
 
 
 @app.route('/login', methods=['POST'])
@@ -49,7 +49,7 @@ def do_admin_login():
             return jsonify({u'userId': uid})
         else: 
             print("ERROR")
-            return jsonify({u'auth': u'-1'})
+            return jsonify({u'auth': -1})
 
 
 @app.route('/GET/channels', methods=['POST'])
