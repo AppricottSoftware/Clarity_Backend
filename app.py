@@ -1,7 +1,9 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-from User import mysqlUserDb
+from User import User
+from Channel import Channel
+from Metadata import Metadata
 
 import cgitb
 cgitb.enable()
@@ -11,33 +13,61 @@ import json
 
 app = Flask(__name__)
 
-@app.route('/') 
-def do_admin_root(): 
-    print("HELLO WORLD")
+@app.route('/')
+def do_admin_root():
+    print("HELLO WORLD IP:", request.remote_addr)
 
 
 @app.route('/register', methods=['POST'])
 def do_admin_register():
-    print("Invoking admin registration")
+    print("Invoking admin registration IP:", request.remote_addr)
     if request.method == "POST":
+        # registration to user table
         json_dict = request.get_json()  # Creates into a dictionary
-        newUser = mysqlUserDb(json_dict) # Dict will be parsed in constructor 
-        newUser.registrationUser()
-        return jsonify(json_dict) #TODO return a better dictionary with return code
+        newUser = User(json_dict)  # Dict will be parsed in constructor
+
+        # Checking for duplicated users
+        if newUser.checkDuplicateUsers() is False: 
+            return jsonify({u'userId': -1})
+
+        # Registering the user to the db
+        newUid = newUser.registrationUser()
+        return jsonify({u'userId': newUid})
     else:
-        return
+        return jsonify({u'userId': -1})
+
 
 @app.route('/login', methods=['POST'])
-def do_admin_login(): 
-    print("Invoking admin login")
+def do_admin_login():
+    print("Invoking admin login IP:", request.remote_addr)
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
-        newUser = mysqlUserDb(json_dict) # Dict will be parsed in constructor 
-	if newUser.validateUser():
-	    return jsonify({u'auth':u'success'}) 
-        else:
-            return jsonify({u'auth':u'failure'})
+        newUser = User(json_dict)  # Dict will be parsed in constructor
+        uid = newUser.getUserUid()
+        if newUser.validateUser() is True: 
+            print("HERE")
+            return jsonify({u'userId': uid})
+        else: 
+            print("ERROR")
+            return jsonify({u'userId': -1})
 
+
+@app.route('/GET/channels', methods=['POST'])
+def GETChannels():
+    print("Invoking admin /GET/channels, IP:", request.remote_addr)
+
+@app.route('/PUT/channels', methods=['POST'])
+def PUTChannels():
+    print("Invoking admin /PUT/channels, IP:", request.remote_addr)
+
+@app.route('/PUT/channels/Likes', methods=['POST'])
+def PUTChannelsLikes():
+    print("Invoking admin /PUT/channel/Likes, IP:", request.remote_addr)
+
+
+@app.route('/PUT/channels/Dislikes', methods=['POST'])
+def PUTChannelsDislikes():
+    print("Invoking admin /PUT/channel/Dislikes, IP:", request.remote_addr)
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)

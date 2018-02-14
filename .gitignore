@@ -2,3 +2,5 @@ settings.py
 __pycache__
 ENV
 *.pyc
+create_db.sql
+.vscode
