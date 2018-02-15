@@ -4,6 +4,7 @@ import settings
 from User import User
 from Channel import Channel
 from Metadata import Metadata
+from Channel_Metadata import Channel_Metadata
 
 import cgitb
 cgitb.enable()
@@ -28,13 +29,13 @@ def do_admin_register():
 
         # Checking for duplicated users
         if newUser.checkDuplicateUsers() is False: 
-            return jsonify({u'userId': -1})
+            return jsonify({u'userId': -1}), 401
 
         # Registering the user to the db
         newUid = newUser.registrationUser()
-        return jsonify({u'userId': newUid})
+        return jsonify({u'userId': newUid}), 201
     else:
-        return jsonify({u'userId': -1})
+        return jsonify({u'userId': -1}), 400 
 
 
 @app.route('/login', methods=['POST'])
@@ -45,11 +46,11 @@ def do_admin_login():
         newUser = User(json_dict)  # Dict will be parsed in constructor
         uid = newUser.getUserUid()
         if newUser.validateUser() is True: 
-            print("HERE")
-            return jsonify({u'userId': uid})
+            return jsonify({u'userId': uid}), 201
         else: 
-            print("ERROR")
-            return jsonify({u'userId': -1})
+            return jsonify({u'userId': -1}), 401
+    else: 
+        return jsonify({u"error": -1}), 400
 
 
 @app.route('/GET/channels', methods=['POST'])
@@ -63,6 +64,20 @@ def PUTChannels():
 @app.route('/PUT/channels/Likes', methods=['POST'])
 def PUTChannelsLikes():
     print("Invoking admin /PUT/channel/Likes, IP:", request.remote_addr)
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+        cid = json_dict["cid"]
+        for i in json_dict["metadata"]: 
+            mid = i["mid"]
+            channel_metadata = Channel_Metadata(mid, cid)
+            listOfInstances = channel_metadata.upVoteLikes()
+            for j in listOfInstances: 
+                channel_metadata.update(j)
+        
+
+        return jsonify({u"error": -1}), 400
+    else: 
+        return jsonify({u"error": -1}), 400
 
 
 @app.route('/PUT/channels/Dislikes', methods=['POST'])

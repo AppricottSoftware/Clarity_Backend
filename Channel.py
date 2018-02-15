@@ -3,11 +3,6 @@ import settings
 import pymysql
 
 class Channel: 
-    """ 
-        \authors: Patrick Le, Guthrie Price
-        \brief: Class to manage Clarity's Channels objects
-    """
-
     def __init__(self, uid, genres, title, image=None):
         """The constructor"""
         self.uid = str(uid)

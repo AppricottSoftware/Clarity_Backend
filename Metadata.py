@@ -3,10 +3,6 @@ import settings
 import pymysql
 
 class Metadata: 
-    """ 
-        \author: Patrick Le
-        \brief: Class to manage Clarity's Metadata objects
-    """
     def __init__(self, cid):
         """The constructor"""
         self.cid = str(cid)
@@ -25,7 +21,7 @@ class Metadata:
                 self.logger.info("Found user... Returning User")
                 return result[0][0]
             else : 
-                self.logger.warn("Could not find user " + self.email)
+                self.logger.warn("Could not find metadata: ", self.cid)
                 return 0
         except Warning as warn:
             self.logger.error("Waring: " + str(warn) + "\nStop\n")
@@ -44,3 +40,4 @@ class Metadata:
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return None
+
