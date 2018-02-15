@@ -1,14 +1,23 @@
 import logging 
+import os
 
 class Logger: 
     def __init__(self):     
-        logger = logging.getLogger(__name__)
-        hdlr = logging.FileHandler('/var/tmp/clarity.log')
-        formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-        hdlr.setFormatter(formatter)
-        logger.addHandler(hdlr)
-        logger.setLevel(logging.DEBUG)
-        self.logger = logger
+        self.logger = self.generate_logger()
 
     def getLogger(self): 
         return self.logger
+
+    def generate_logger(self):
+        FILENAME = "/var/tmp/clarity.log"
+        FORMAT = "%(asctime)s %(levelname)s %(message)s"
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+        # Reset the logger.handlers if it already exists.
+        if logger.handlers:
+            logger.handlers = []
+        fh = logging.FileHandler(FILENAME)
+        formatter = logging.Formatter(FORMAT)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+        return logger
