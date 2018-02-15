@@ -29,10 +29,7 @@ class Channel_Metadata:
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return None
 
-# UPDATE table_name
-# SET column1 = value1, column2 = value2, ...
-# WHERE condition;
-    def update(self, element): 
+    def upVoteScore(self, element): 
         try: 
             dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             cursor = dbConnection.cursor()
@@ -45,9 +42,7 @@ class Channel_Metadata:
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return False
 
-
-
-    def upVoteLikes(self): 
+    def getInstance(self): 
         self.logger.info("Invoking upVoteLikes where mid:{} & cid:{}".format(str(self.mid), str(self.cid)))
         try: 
             listOfInstances = self.getInstanceMidCid()
@@ -55,3 +50,16 @@ class Channel_Metadata:
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return None
+
+    def downVoteScore(self, element): 
+        try: 
+            dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+            cursor = dbConnection.cursor()
+            command = "update channel_metadata set score={} where mid={} && cid={}".format(element[2]-1, element[0], element[1])
+            cursor.execute(command)
+            dbConnection.commit() # Required to commit changes to the actual database
+            dbConnection.close()
+            return True
+        except Warning as warn: 
+            self.logger.error("Warning: " + str(warn) + "\nStop.\n")
+            return False

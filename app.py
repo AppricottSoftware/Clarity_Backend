@@ -66,23 +66,41 @@ def PUTChannelsLikes():
     print("Invoking admin /PUT/channel/Likes, IP:", request.remote_addr)
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
-        cid = json_dict["cid"]
+        
+        cid = json_dict["cid"] # Grabbing the cid of the channel
+        # For each metadata, update the score according to the cid and the respective mid
         for i in json_dict["metadata"]: 
             mid = i["mid"]
-            channel_metadata = Channel_Metadata(mid, cid)
-            listOfInstances = channel_metadata.upVoteLikes()
-            for j in listOfInstances: 
-                channel_metadata.update(j)
-        
+            listOfInstances = Channel_Metadata(mid, cid).getInstance()
+            res = Channel_Metadata(mid, cid).upVoteScore(Channel_Metadata(mid, cid).getInstance()[0]) # Up votes the score
+            if res is False: # Sanity Check --- Should not happen 
+                return jsonify({u"result": "FAILURE"}), 409
 
-        return jsonify({u"error": -1}), 400
+        return jsonify({u"result": "SUCCESS"}), 200
     else: 
-        return jsonify({u"error": -1}), 400
+        return jsonify({u"result": "FAILURE"}), 400
 
 
 @app.route('/PUT/channels/Dislikes', methods=['POST'])
 def PUTChannelsDislikes():
     print("Invoking admin /PUT/channel/Dislikes, IP:", request.remote_addr)
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+        
+        cid = json_dict["cid"] # Grabbing the cid of the channel
+        # For each metadata, update the score according to the cid and the respective mid
+        for i in json_dict["metadata"]: 
+            mid = i["mid"]
+            listOfInstances = Channel_Metadata(mid, cid).getInstance()
+            res = Channel_Metadata(mid, cid).downVoteScore(listOfInstances[0]) # Down votes the score
+            if res is False: # Sanity Check --- Should not happen 
+                return jsonify({u"result": "FAILURE"}), 409
+
+        return jsonify({u"result": "SUCCESS"}), 200
+    else: 
+        return jsonify({u"result": "FAILURE"}), 400
+
+
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
