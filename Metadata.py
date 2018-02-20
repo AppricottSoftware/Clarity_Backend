@@ -21,7 +21,7 @@ class Metadata:
                 self.logger.info("Found user... Returning User")
                 return result[0][0]
             else : 
-                self.logger.warn("Could not find metadata: ", self.cid)
+                self.logger.warn("Could not find metadata: {}".format(str(self.cid)))
                 return 0
         except Warning as warn:
             self.logger.error("Waring: " + str(warn) + "\nStop\n")

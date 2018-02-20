@@ -5,6 +5,7 @@ from User import User
 from Channel import Channel, getChannelsByToken
 from Metadata import Metadata
 from Channel_Metadata import Channel_Metadata
+from Logger import Logger as Log
 
 import cgitb
 cgitb.enable()
@@ -14,14 +15,15 @@ import json
 
 app = Flask(__name__)
 
+logger = Log().getLogger()
+
 @app.route('/')
 def do_admin_root():
-    print("HELLO WORLD IP:", request.remote_addr)
-
+    logger.info("HELLO WORLD IP: {}".format(request.remote_addr))
 
 @app.route('/register', methods=['POST'])
 def do_admin_register():
-    print("Invoking admin registration IP:", request.remote_addr)
+    logger.info("\n\nInvoking admin registration IP: {} ".format(request.remote_addr))
     if request.method == "POST":
         # registration to user table
         json_dict = request.get_json()  # Creates into a dictionary
@@ -40,7 +42,7 @@ def do_admin_register():
 
 @app.route('/login', methods=['POST'])
 def do_admin_login():
-    print("Invoking admin login IP:", request.remote_addr)
+    logger.info("\n\nInvoking admin login IP: {} ".format(request.remote_addr))
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         newUser = User(json_dict)  # Dict will be parsed in constructor
@@ -55,7 +57,7 @@ def do_admin_login():
 
 @app.route('/GET/channels', methods=['GET', 'POST'])
 def GETChannels():
-    print("Invoking admin /GET/channels, IP:", request.remote_addr)
+    logger.info("\n\nInvoking admin /GET/channels, IP: {} ".format(request.remote_addr))
     if request.method == "GET":
        userData = request.get_json()
        uid = userData["uid"]
@@ -70,7 +72,7 @@ def GETChannels():
 
 @app.route('/PUT/channels', methods=['POST'])
 def PUTChannels():
-    print("Invoking admin /PUT/channels, IP:", request.remote_addr)
+    logger.info("\n\nInvoking admin /PUT/channels, IP: {} ".format(request.remote_addr))
     if request.method == "POST":
         channelData = request.get_json()
         newChannel = Channel(channelData)
@@ -85,7 +87,7 @@ def PUTChannels():
 
 @app.route('/PUT/channels/Likes', methods=['POST'])
 def PUTChannelsLikes():
-    print("Invoking admin /PUT/channel/Likes, IP:", request.remote_addr)
+    logger.info("\n\nInvoking admin /PUT/channel/Likes, IP:{} ".format(request.remote_addr))
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         
@@ -105,7 +107,7 @@ def PUTChannelsLikes():
 
 @app.route('/PUT/channels/Dislikes', methods=['POST'])
 def PUTChannelsDislikes():
-    print("Invoking admin /PUT/channel/Dislikes, IP:", request.remote_addr)
+    logger.info("\n\nInvoking admin /PUT/channel/Dislikes, IP:{} ".format(request.remote_addr))
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         
@@ -123,5 +125,6 @@ def PUTChannelsDislikes():
         return jsonify({u"result": "FAILURE"}), 400
 
 if __name__ == "__main__":
+    print("SERVER ON!!!\n\n")
     app.secret_key = os.urandom(12)
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -1,5 +1,5 @@
 import logging 
-import os
+import datetime
 
 class Logger: 
     def __init__(self):     
@@ -9,7 +9,8 @@ class Logger:
         return self.logger
 
     def generate_logger(self):
-        FILENAME = "/var/log/clarity.log"
+        now = datetime.datetime.now()
+        FILENAME = "/var/log/clarity_log_{}_{}_{}.log".format(now.year, now.month, now.day)
         FORMAT = "%(asctime)s %(levelname)s %(message)s"
         logger = logging.getLogger()
         logger.setLevel(logging.INFO)
