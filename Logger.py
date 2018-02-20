@@ -9,7 +9,7 @@ class Logger:
         return self.logger
 
     def generate_logger(self):
-        FILENAME = "/var/tmp/clarity.log"
+        FILENAME = "/var/log/clarity.log"
         FORMAT = "%(asctime)s %(levelname)s %(message)s"
         logger = logging.getLogger()
         logger.setLevel(logging.INFO)
