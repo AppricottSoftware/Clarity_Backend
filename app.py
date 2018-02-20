@@ -2,7 +2,7 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os
 import settings
 from User import User
-from Channel import Channel
+from Channel import Channel, getChannelsByToken
 from Metadata import Metadata
 from Channel_Metadata import Channel_Metadata
 
@@ -29,13 +29,13 @@ def do_admin_register():
 
         # Checking for duplicated users
         if newUser.checkDuplicateUsers() is False: 
-            return jsonify({u'userId': -1}), 401
+            return jsonify({u'uid': -1}), 401
 
         # Registering the user to the db
         newUid = newUser.registrationUser()
-        return jsonify({u'userId': newUid}), 201
+        return jsonify({u'uid': newUid}), 201
     else:
-        return jsonify({u'userId': -1}), 400 
+        return jsonify({u'uid': -1}), 400 
 
 
 @app.route('/login', methods=['POST'])
@@ -46,20 +46,42 @@ def do_admin_login():
         newUser = User(json_dict)  # Dict will be parsed in constructor
         uid = newUser.getUserUid()
         if newUser.validateUser() is True: 
-            return jsonify({u'userId': uid}), 201
+            return jsonify({u'uid': uid}), 201
         else: 
-            return jsonify({u'userId': -1}), 401
+            return jsonify({u'uid': -1}), 401
     else: 
-        return jsonify({u"error": -1}), 400
+        return jsonify({u'uid': -1}), 400
 
 
-@app.route('/GET/channels', methods=['POST'])
+@app.route('/GET/channels', methods=['GET', 'POST'])
 def GETChannels():
     print("Invoking admin /GET/channels, IP:", request.remote_addr)
+    if request.method == "GET":
+       userData = request.get_json()
+       uid = userData["uid"]
+       channels = getChannelsByToken(uid)
+       if channels is not None:
+           return jsonify(channels), 200
+       else:
+           return jsonify({u'cid': -1}), 500
+    else:
+        return jsonify({u'cid': -1}), 400
+
 
 @app.route('/PUT/channels', methods=['POST'])
 def PUTChannels():
     print("Invoking admin /PUT/channels, IP:", request.remote_addr)
+    if request.method == "POST":
+        channelData = request.get_json()
+        newChannel = Channel(channelData)
+        newCid = newChannel.initializeUserChannel()
+        if newCid is not None:
+            return jsonify({u'cid': newCid}), 201
+        else:
+            return jsonify({u'cid': -1}), 500
+    else:
+        return jsonify({u'cid': -1}), 400
+
 
 @app.route('/PUT/channels/Likes', methods=['POST'])
 def PUTChannelsLikes():
