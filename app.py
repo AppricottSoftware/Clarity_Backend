@@ -77,10 +77,8 @@ def PUTChannels():
         channelData = request.get_json()
         newChannel = Channel(channelData)
         newCid = newChannel.initializeUserChannel()
-        if newCid is not None:
-            return jsonify({u'cid': newCid}), 201
-        else:
-            return jsonify({u'cid': -1}), 500
+
+        return jsonify({u'cid': newCid}), 201
     else:
         return jsonify({u'cid': -1}), 400
 
@@ -96,6 +94,10 @@ def PUTChannelsLikes():
         for i in json_dict["metadata"]: 
             mid = i["mid"]
             listOfInstances = Channel_Metadata(mid, cid).getInstance()
+            
+            if listOfInstances is 0: 
+                return jsonify({u"result": "FAILURE"}), 409
+
             res = Channel_Metadata(mid, cid).upVoteScore(listOfInstances[0]) # Up votes the score
             if res is False: # Sanity Check --- Should not happen 
                 return jsonify({u"result": "FAILURE"}), 409
@@ -116,6 +118,10 @@ def PUTChannelsDislikes():
         for i in json_dict["metadata"]: 
             mid = i["mid"]
             listOfInstances = Channel_Metadata(mid, cid).getInstance()
+
+            if listOfInstances is 0: 
+                return jsonify({u"result": "FAILURE"}), 409
+
             res = Channel_Metadata(mid, cid).downVoteScore(listOfInstances[0]) # Down votes the score
             if res is False: # Sanity Check --- Should not happen 
                 return jsonify({u"result": "FAILURE"}), 409

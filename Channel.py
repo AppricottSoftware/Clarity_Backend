@@ -45,16 +45,16 @@ class Channel:
                         ).format(self.token, self.title)
             cursor.execute(query)
             dbConnection.commit()
+
             cid = self.getChannelCid()
-            query = ("INSERT INTO `channel_metadata` (`mid`, `cid`) "
-                       "VALUES (\"{}\", \"{}\")"
-                      ).format(self.genres[0]["mid"], cid)
-            for genre in self.genres[1:]:
-                query += ",(\"{}\", \"{}\")".format(genre["mid"], cid)
-            query += ";"
-            cursor.execute(query)
-            dbConnection.commit() # Required to commit changes to the actual database
+            print(self.genres)
+            for i in self.genres: 
+                curr_mid = i["mid"]
+                command = "insert into channel_metadata (mid, cid, score) values ({},{},{});".format(curr_mid, cid, 5)
+                cursor.execute(command)
+                dbConnection.commit()
             dbConnection.close()
+            
             self.logger.info("Successful connection termination")
             return cid # Grabbing the channel id 
         except Warning as warn: 

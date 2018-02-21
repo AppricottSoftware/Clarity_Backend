@@ -23,7 +23,7 @@ class Channel_Metadata:
                 return res
             else: 
                 self.logger.warn("Could not find any instances with mid:{} & cid:{}".format(str(self.mid), str(self.cid)))
-                return res
+                return 0
 
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
