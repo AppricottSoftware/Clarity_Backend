@@ -4,3 +4,4 @@ ENV
 *.pyc
 create_db.sql
 .vscode
+mysql
