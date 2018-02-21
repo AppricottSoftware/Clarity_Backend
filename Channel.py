@@ -47,7 +47,7 @@ class Channel:
             dbConnection.commit()
 
             cid = self.getChannelCid()
-            print(self.genres)
+            # print(self.genres)
             for i in self.genres: 
                 curr_mid = i["mid"]
                 command = "insert into channel_metadata (mid, cid, score) values ({},{},{});".format(curr_mid, cid, 5)

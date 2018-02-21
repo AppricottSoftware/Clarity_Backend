@@ -16,15 +16,24 @@ class Channel_Metadata:
             command = "select * from channel_metadata where mid={} && cid={}".format(str(self.mid), str(self.cid))
             cursor.execute(command)
             res = cursor.fetchall()
-            dbConnection.close()
 
             if res: 
                 self.logger.info("Found instances... returning mid cid instances")
+                dbConnection.close()
                 return res
             else: 
-                self.logger.warn("Could not find any instances with mid:{} & cid:{}".format(str(self.mid), str(self.cid)))
-                return 0
+                self.logger.warn("Could not find any instances with mid:{} & cid:{}... Adding them into the user's channel_metadata".format(str(self.mid), str(self.cid)))
+                command = "insert into channel_metadata (mid, cid, score) values ({},{},{});".format(self.mid, self.cid, 5)
+                cursor.execute(command)
+                dbConnection.commit()
 
+                command = "select * from channel_metadata where mid={} && cid={}".format(str(self.mid), str(self.cid))
+                cursor.execute(command)
+                res = cursor.fetchall()
+
+                dbConnection.close()
+                return res
+                
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return None
