@@ -96,7 +96,7 @@ def PUTChannelsLikes():
         for i in json_dict["metadata"]: 
             mid = i["mid"]
             listOfInstances = Channel_Metadata(mid, cid).getInstance()
-            res = Channel_Metadata(mid, cid).upVoteScore(Channel_Metadata(mid, cid).getInstance()[0]) # Up votes the score
+            res = Channel_Metadata(mid, cid).upVoteScore(listOfInstances[0]) # Up votes the score
             if res is False: # Sanity Check --- Should not happen 
                 return jsonify({u"result": "FAILURE"}), 409
 
