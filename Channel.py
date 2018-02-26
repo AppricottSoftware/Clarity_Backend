@@ -78,3 +78,14 @@ def getChannelsByToken(token):
         return channels
     except Warning as warn:
         return None
+
+def deleteChannelsByToken(tokenUid, tokenCid):
+    # Should delete a channel
+    try:
+        dbConnection = pymysql.connect(host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database)
+        with dbConnection.cursor(pymysql.cursors.DictCursor) as cursor:
+            queryChannels = ("DELETE FROM `channel` WHERE `cid` = \"{}\"").format(str(tokenCid))
+            cursor.execute(queryChannels)            
+            getChannelsByToken(tokenCid)
+    except Warning as warn:
+        return None
