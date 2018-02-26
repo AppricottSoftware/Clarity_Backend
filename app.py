@@ -130,6 +130,22 @@ def PUTChannelsDislikes():
     else: 
         return jsonify({u"result": "FAILURE"}), 400
 
+
+@app.route('/PUT/channels/Delete', methods=['GET', 'POST'])
+def GETChannels():
+    logger.info("\n\nInvoking admin /GET/channels, IP: {} ".format(request.remote_addr))
+    if request.method == "PUT":
+       userData = request.get_json()
+       uid = userData["uid"]
+       cid = userData["cid"]
+       channels = deleteChannelByToken(uid, cid)
+       if channels is not None:
+           return jsonify(channels), 200
+       else:
+           return jsonify({u'cid': -1}), 500
+    else:
+        return jsonify({u'cid': -1}), 400
+
 if __name__ == "__main__":
     print("SERVER ON!!!\n\n")
     app.secret_key = os.urandom(12)

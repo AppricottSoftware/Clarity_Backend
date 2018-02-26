@@ -86,6 +86,6 @@ def deleteChannelByToken(tokenUid, tokenCid):
         with dbConnection.cursor(pymysql.cursors.DictCursor) as cursor:
             queryChannels = ("DELETE FROM `channel` WHERE `cid` = \"{}\"").format(str(tokenCid))
             cursor.execute(queryChannels)            
-            getChannelsByToken(tokenCid)
+            return getChannelByToken(tokenCid)
     except Warning as warn:
         return None
