@@ -2,7 +2,7 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os
 import settings
 from User import User
-from Channel import Channel, getChannelsByToken
+from Channel import Channel, getChannelsByToken, deleteChannelByToken
 from Metadata import Metadata
 from Channel_Metadata import Channel_Metadata
 from Logger import Logger as Log
@@ -131,13 +131,14 @@ def PUTChannelsDislikes():
         return jsonify({u"result": "FAILURE"}), 400
 
 
-@app.route('/PUT/channels/Delete', methods=['GET', 'POST'])
-def GETChannels():
+@app.route('/PUT/channels/Delete', methods=['POST'])
+def DeleteChannels():
     logger.info("\n\nInvoking admin /GET/channels, IP: {} ".format(request.remote_addr))
     if request.method == "PUT":
        userData = request.get_json()
        uid = userData["uid"]
        cid = userData["cid"]
+
        channels = deleteChannelByToken(uid, cid)
        if channels is not None:
            return jsonify(channels), 200
