@@ -4,11 +4,6 @@ import pymysql
 from Logger import Logger as Log
 
 class User: 
-    """
-        \author: Patrick Le 
-        \brief: Creates a User object w/ db function for db interactions
-    """
-
     def __init__(self, userJson): 
         """The constructor"""
         self.email = userJson["email"]
