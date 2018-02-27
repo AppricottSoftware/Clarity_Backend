@@ -1,7 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-from User import User, getUserEmail, updateEmail, updatePassword
+from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastSpeed, updatePodcastSpeed
 from Channel import Channel, getChannelsByToken
 from Metadata import Metadata
 from Channel_Metadata import Channel_Metadata
@@ -184,9 +184,8 @@ def do_admin_GETpodcastSpeed():
     logger.info("\n\nInvoking admin /GET/podcastSpeed, IP:{} ".format(request.remote_addr))
     if request.method == "GET":
         json_dict = request.get_json()  # Creates into a dictionary
-        newUser = User(json_dict)  # Dict will be parsed in constructor
-        res = newUser.getUserPodcastSpeed()
-        if res is not 0: 
+        res = getUserPodcastSpeed(json_dict["uid"])
+        if res is not None: 
             return jsonify({u'podcastSpeed': res}), 200
         else: 
             return jsonify({u'res': -1}), 401
@@ -198,14 +197,12 @@ def do_admin_PUTpodcastSpeed():
     logger.info("\n\nInvoking admin /GET/podcastSpeed, IP:{} ".format(request.remote_addr))
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
-        newUser = User(json_dict)  # Dict will be parsed in constructor
-        res = newUser.getUserPodcastSpeed()
-        if res is not 0: 
-            return jsonify({u'podcastSpeed': res}), 200
+        if updatePodcastSpeed(json_dict["uid"], json_dict["podcastSpeed"]) is True:
+            return jsonify({u"result": "SUCCESS"}), 200
         else: 
-            return jsonify({u'res': -1}), 401
+            return jsonify({u"result": "FAILURE"}), 200
     else: 
-        return jsonify({u'res': -1}), 400
+        return jsonify({u"result": "FAILURE"}), 400
 
 #  ------------ Getter & Setters for Podcast END------------
 

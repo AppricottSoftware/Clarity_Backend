@@ -92,17 +92,52 @@ class User:
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return False
 
-    def getUserPodcastSpeed(self): 
-        self.logger.info("\nRunning getUserPodcastSpeed()")
-        checkUser = "Select podcastLength from users where email=\"" + self.email + "\";"
-        self.cursor.execute(checkUser)
-        result = self.cursor.fetchall()
+
+
+
+
+
+def getUserPodcastSpeed(uid): 
+    logger = Log().getLogger()
+    logger.info("\nRunning getUserPodcastSpeed()")
+    try:
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        checkUser = "Select podcastLength from users where uid=\"{}\";".format(uid)
+        cursor.execute(checkUser)
+        result = cursor.fetchall()
         if result : 
-            self.logger.info("Found Podcast Speed... Returning")
+            logger.info("Found Podcast Speed... Returning")
             return result[0][0]
         else : 
-            self.logger.warn("Could not find email " + self.email)
-            return 0
+            logger.warn("Could not find uid " + uid)
+            return None
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return None
+
+
+def updatePodcastSpeed(uid, newPodcastSpeed): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's PodcastSpeed")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        query = "update users set podcastLength=\"{}\" where uid=\"{}\"".format(newPodcastSpeed, uid)
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user " + str(uid) + "'s Podcast Speed: " + str(newPodcastSpeed))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False
+
+
+
+
+
 
 def updateEmail(uid, newEmail): 
     logger = Log().getLogger()
@@ -150,23 +185,6 @@ def updatePassword(uid, newPassword):
         cursor.execute(query)
         dbConnection.commit() # Required to commit changes to the actual database
         logger.info("Successful update to user " + str(uid) + "'s password " + str(newPassword))
-        dbConnection.close()
-        logger.info("Successful connection termination")
-        return True
-    except Warning as warn: 
-        logger.error("Warning: " + str(warn) + "\nStop.\n")
-        return False
-
-def updatePodcastSpeed(uid, newPodcastSpeed): 
-    logger = Log().getLogger()
-    logger.info("\nUpdating User's PodcastSpeed")
-    try: 
-        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
-        cursor = dbConnection.cursor()
-        query = "update users set podcastLength=\"{}\" where uid=\"{}\"".format(newPodcastSpeed, uid)
-        cursor.execute(query)
-        dbConnection.commit() # Required to commit changes to the actual database
-        logger.info("Successful update to user " + str(uid) + "'s Podcast Speed: " + str(newPodcastSpeed))
         dbConnection.close()
         logger.info("Successful connection termination")
         return True
