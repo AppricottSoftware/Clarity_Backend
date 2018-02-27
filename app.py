@@ -21,6 +21,7 @@ logger = Log().getLogger()
 def do_admin_root():
     logger.info("HELLO WORLD IP: {}".format(request.remote_addr))
 
+# ------------ Registration & Login ------------
 @app.route('/register', methods=['POST'])
 def do_admin_register():
     logger.info("\n\nInvoking admin registration IP: {} ".format(request.remote_addr))
@@ -53,8 +54,9 @@ def do_admin_login():
             return jsonify({u'uid': -1}), 401
     else: 
         return jsonify({u'uid': -1}), 400
+# ------------ Registration & Login END ------------
 
-
+# ------------ Getter & Setters for User Info ------------
 @app.route('/GET/UserEmail', methods=['GET']) 
 def do_admin_GetEmail(): 
     logger.info("\n\nInvoking do_admin_GetEmail IP: {} ".format(request.remote_addr))
@@ -95,6 +97,11 @@ def do_admin_updatePassword():
     else: 
         return jsonify({u'res': -1}), 400
 
+
+# ------------ Getter & Setters for User Info END ------------
+
+
+# ------------ Getter & Setters for Channels Info ------------
 @app.route('/GET/channels', methods=['GET', 'POST'])
 def do_admin_GETChannels():
     logger.info("\n\nInvoking admin /GET/channels, IP: {} ".format(request.remote_addr))
@@ -170,7 +177,9 @@ def do_admin_PUTChannelsDislikes():
     else: 
         return jsonify({u"result": "FAILURE"}), 400
 
+# ------------ Getter & Setters for Channels Info END ------------
 
+#  ------------ Getter & Setters for Podcast ------------
 @app.route('/GET/podcastSpeed', methods=['POST'])
 def do_admin_GETpodcastSpeed():
     logger.info("\n\nInvoking admin /GET/podcastSpeed, IP:{} ".format(request.remote_addr))
@@ -185,6 +194,7 @@ def do_admin_GETpodcastSpeed():
     else: 
         return jsonify({u'res': -1}), 400
 
+#  ------------ Getter & Setters for Podcast END------------
 
 if __name__ == "__main__":
     print("SERVER ON!!!\n\n")
