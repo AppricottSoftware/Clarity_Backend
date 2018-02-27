@@ -97,9 +97,9 @@ class User:
 
 
 
-def getUserPodcastSpeed(uid): 
+def getUserPodcastLength(uid): 
     logger = Log().getLogger()
-    logger.info("\nRunning getUserPodcastSpeed()")
+    logger.info("\nRunning getUserPodcastLength()")
     try:
         dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
         cursor = dbConnection.cursor()
@@ -117,16 +117,16 @@ def getUserPodcastSpeed(uid):
         return None
 
 
-def updatePodcastSpeed(uid, newPodcastSpeed): 
+def updatePodcastLength(uid, newPodcastLength): 
     logger = Log().getLogger()
-    logger.info("\nUpdating User's PodcastSpeed")
+    logger.info("\nUpdating User's PodcastLength")
     try: 
         dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
         cursor = dbConnection.cursor()
-        query = "update users set podcastLength=\"{}\" where uid=\"{}\"".format(newPodcastSpeed, uid)
+        query = "update users set podcastLength=\"{}\" where uid=\"{}\"".format(newPodcastLength, uid)
         cursor.execute(query)
         dbConnection.commit() # Required to commit changes to the actual database
-        logger.info("Successful update to user " + str(uid) + "'s Podcast Speed: " + str(newPodcastSpeed))
+        logger.info("Successful update to user " + str(uid) + "'s Podcast Speed: " + str(newPodcastLength))
         dbConnection.close()
         logger.info("Successful connection termination")
         return True

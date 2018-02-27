@@ -1,7 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastSpeed, updatePodcastSpeed
+from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength
 from Channel import Channel, getChannelsByToken
 from Metadata import Metadata
 from Channel_Metadata import Channel_Metadata
@@ -179,25 +179,25 @@ def do_admin_PUTChannelsDislikes():
 # ------------ Getter & Setters for Channels Info END ------------
 
 #  ------------ Getter & Setters for Podcast ------------
-@app.route('/GET/podcastSpeed', methods=['GET'])
-def do_admin_GETpodcastSpeed():
-    logger.info("\n\nInvoking admin /GET/podcastSpeed, IP:{} ".format(request.remote_addr))
+@app.route('/GET/podcastLength', methods=['GET'])
+def do_admin_GETpodcastLength():
+    logger.info("\n\nInvoking admin /GET/podcastLength, IP:{} ".format(request.remote_addr))
     if request.method == "GET":
         json_dict = request.get_json()  # Creates into a dictionary
-        res = getUserPodcastSpeed(json_dict["uid"])
+        res = getUserPodcastLength(json_dict["uid"])
         if res is not None: 
-            return jsonify({u'podcastSpeed': res}), 200
+            return jsonify({u'podcastLength': res}), 200
         else: 
             return jsonify({u'res': -1}), 401
     else: 
         return jsonify({u'res': -1}), 400
 
-@app.route('/PUT/podcastSpeed', methods=['POST'])
-def do_admin_PUTpodcastSpeed():
-    logger.info("\n\nInvoking admin /GET/podcastSpeed, IP:{} ".format(request.remote_addr))
+@app.route('/PUT/podcastLength', methods=['POST'])
+def do_admin_PUTpodcastLength():
+    logger.info("\n\nInvoking admin /GET/podcastLength, IP:{} ".format(request.remote_addr))
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
-        if updatePodcastSpeed(json_dict["uid"], json_dict["podcastSpeed"]) is True:
+        if updatePodcastLength(json_dict["uid"], json_dict["podcastLength"]) is True:
             return jsonify({u"result": "SUCCESS"}), 200
         else: 
             return jsonify({u"result": "FAILURE"}), 200
