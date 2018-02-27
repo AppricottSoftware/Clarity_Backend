@@ -55,6 +55,32 @@ def do_admin_login():
         return jsonify({u'uid': -1}), 400
 
 
+@app.route('/PUT/email', method = ['POST']) 
+def updateEmail(): 
+    logger.info("\n\nInvoking updateEmail IP: {} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+        newUser = User(json_dict)  # Dict will be parsed in constructor
+        if newUser.updateEmail(json_dict['newEmail']) is True: 
+            return jsonify({u'res': "SUCCESS"}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
+@app.route('/PUT/password', method = ['POST']) 
+def updatePassword(): 
+    logger.info("\n\nInvoking updatePassword IP: {} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+        newUser = User(json_dict)  # Dict will be parsed in constructor
+        if newUser.updatePassword(json_dict['password']) is True: 
+            return jsonify({u'res': "SUCCESS"}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
 @app.route('/GET/channels', methods=['GET', 'POST'])
 def GETChannels():
     logger.info("\n\nInvoking admin /GET/channels, IP: {} ".format(request.remote_addr))
@@ -129,6 +155,22 @@ def PUTChannelsDislikes():
         return jsonify({u"result": "SUCCESS"}), 200
     else: 
         return jsonify({u"result": "FAILURE"}), 400
+
+
+@app.route('/GET/podcastSpeed', methods=['POST'])
+def PUTChannelsDislikes():
+    logger.info("\n\nInvoking admin /GET/podcastSpeed, IP:{} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+        newUser = User(json_dict)  # Dict will be parsed in constructor
+        res = newUser.getUserPodcastSpeed()
+        if res is not 0: 
+            return jsonify({u'podcastSpeed': res}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
 
 if __name__ == "__main__":
     print("SERVER ON!!!\n\n")

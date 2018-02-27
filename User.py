@@ -68,8 +68,6 @@ class User:
         self.logger.info("Running getUserPassword()")
         checkUser = "Select password from users where email=\"" + self.email + "\";"
         self.cursor.execute(checkUser)
-
-        self.cursor.execute(checkUser)
         result = self.cursor.fetchall()
         if result : 
             self.logger.info("Found user... Returning User")
@@ -93,4 +91,49 @@ class User:
         except Warning as warn: 
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return False
+
+    def updateEmail(self, newEmail): 
+        self.logger.info("\nUpdating User's Email Address")
+        try: 
+            self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+            self.cursor = self.dbConnection.cursor()
+            query = "update users set email=\"{}\" where email=\"{}\"".format(newEmail, self.email);
+            self.cursor.execute(query)
+            self.dbConnection.commit() # Required to commit changes to the actual database
+            self.logger.info("Successful update to user's email: " + self.email + " to email: " + newEmail)
+            self.dbConnection.close()
+            self.logger.info("Successful connection termination")
+            return True
+        except Warning as warn: 
+            self.logger.error("Warning: " + str(warn) + "\nStop.\n")
+            return False
+
+    
+    def updatePassword(self, newPassword): 
+        self.logger.info("\nUpdating User's Password")
+        try: 
+            self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+            self.cursor = self.dbConnection.cursor()
+            query = "update users set password=\"{}\" where password=\"{}\"".format(newPassword, self.email);
+            self.cursor.execute(query)
+            self.dbConnection.commit() # Required to commit changes to the actual database
+            self.logger.info("Successful update to user's Password: " + self.password + " to email: " + newPassword)
+            self.dbConnection.close()
+            self.logger.info("Successful connection termination")
+            return True
+        except Warning as warn: 
+            self.logger.error("Warning: " + str(warn) + "\nStop.\n")
+            return False
+
+    def getUserPodcastSpeed(self): 
+        self.logger.info("\nRunning getUserPodcastSpeed()")
+        checkUser = "Select podcastLength from users where email=\"" + self.email + "\";"
+        self.cursor.execute(checkUser)
+        result = self.cursor.fetchall()
+        if result : 
+            self.logger.info("Found Podcast Speed... Returning")
+            return result[0][0]
+        else : 
+            self.logger.warn("Could not find email " + self.email)
+            return 0
 
