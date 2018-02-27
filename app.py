@@ -133,19 +133,17 @@ def PUTChannelsDislikes():
 
 @app.route('/PUT/channels/Delete', methods=['POST'])
 def DeleteChannels():
-    logger.info("\n\nInvoking admin /GET/channels, IP: {} ".format(request.remote_addr))
-    if request.method == "PUT":
+    logger.info("\n\nInvoking /PUT/channels/Delete, IP: {} ".format(request.remote_addr))
+    if request.method == "POST":
        userData = request.get_json()
-       uid = userData["uid"]
-       cid = userData["cid"]
-
-       channels = deleteChannelByToken(uid, cid)
+       channels = deleteChannelByToken(userData["uid"], userData["cid"])
        if channels is not None:
            return jsonify(channels), 200
        else:
            return jsonify({u'cid': -1}), 500
     else:
         return jsonify({u'cid': -1}), 400
+
 
 if __name__ == "__main__":
     print("SERVER ON!!!\n\n")
