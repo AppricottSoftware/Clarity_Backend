@@ -92,23 +92,6 @@ class User:
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return False
 
-    
-    def updatePassword(self, newPassword): 
-        self.logger.info("\nUpdating User's Password")
-        try: 
-            self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
-            self.cursor = self.dbConnection.cursor()
-            query = "update users set password=\"{}\" where password=\"{}\"".format(newPassword, self.email);
-            self.cursor.execute(query)
-            self.dbConnection.commit() # Required to commit changes to the actual database
-            self.logger.info("Successful update to user's Password: " + self.password + " to email: " + newPassword)
-            self.dbConnection.close()
-            self.logger.info("Successful connection termination")
-            return True
-        except Warning as warn: 
-            self.logger.error("Warning: " + str(warn) + "\nStop.\n")
-            return False
-
     def getUserPodcastSpeed(self): 
         self.logger.info("\nRunning getUserPodcastSpeed()")
         checkUser = "Select podcastLength from users where email=\"" + self.email + "\";"
@@ -156,3 +139,20 @@ def getUserEmail(uid):
     except Warning as warn:
         logger.error("Waring: " + str(warn) + "\nStop\n")
         return None
+
+def updatePassword(uid, newPassword): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's Password")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        query = "update users set password=\"{}\" where uid=\"{}\"".format(newPassword, uid)
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user " + str(uid) + "'s password " + str(newPassword))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        self.logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False

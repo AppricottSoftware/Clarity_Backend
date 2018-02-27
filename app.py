@@ -1,7 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-from User import User, getUserEmail, updateEmail
+from User import User, getUserEmail, updateEmail, updatePassword
 from Channel import Channel, getChannelsByToken
 from Metadata import Metadata
 from Channel_Metadata import Channel_Metadata
@@ -87,8 +87,8 @@ def do_admin_updatePassword():
     logger.info("\n\nInvoking updatePassword IP: {} ".format(request.remote_addr))
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
-        newUser = User(json_dict)  # Dict will be parsed in constructor
-        if newUser.updatePassword(json_dict['password']) is True: 
+
+        if updatePassword(json_dict['uid'], json_dict['newPassword']) is True:
             return jsonify({u'res': "SUCCESS"}), 200
         else: 
             return jsonify({u'res': -1}), 401
