@@ -156,3 +156,20 @@ def updatePassword(uid, newPassword):
     except Warning as warn: 
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
+
+def updatePodcastSpeed(uid, newPodcastSpeed): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's PodcastSpeed")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        query = "update users set podcastLength=\"{}\" where uid=\"{}\"".format(newPodcastSpeed, uid)
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user " + str(uid) + "'s Podcast Speed: " + str(newPodcastSpeed))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False
