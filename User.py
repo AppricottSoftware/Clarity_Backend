@@ -92,22 +92,6 @@ class User:
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return False
 
-    def updateEmail(self, newEmail): 
-        self.logger.info("\nUpdating User's Email Address")
-        try: 
-            self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
-            self.cursor = self.dbConnection.cursor()
-            query = "update users set email=\"{}\" where email=\"{}\"".format(newEmail, self.email);
-            self.cursor.execute(query)
-            self.dbConnection.commit() # Required to commit changes to the actual database
-            self.logger.info("Successful update to user's email: " + self.email + " to email: " + newEmail)
-            self.dbConnection.close()
-            self.logger.info("Successful connection termination")
-            return True
-        except Warning as warn: 
-            self.logger.error("Warning: " + str(warn) + "\nStop.\n")
-            return False
-
     
     def updatePassword(self, newPassword): 
         self.logger.info("\nUpdating User's Password")
@@ -137,3 +121,38 @@ class User:
             self.logger.warn("Could not find email " + self.email)
             return 0
 
+def updateEmail(uid, newEmail): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's Email Address")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        query = "update users set email=\"{}\" where uid=\"{}\"".format(newEmail, uid);
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user's uid: " + str(uid) + " to email: " + str(newEmail))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False
+
+def getUserEmail(uid): 
+    logger = Log().getLogger()
+    logger.info("\nFinding User Email with: {}".format(str(uid)))
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        checkUser = "SELECT email FROM users WHERE uid=\"" + str(uid) + "\";"
+        cursor.execute(checkUser)
+        result = cursor.fetchall()
+        if result : 
+            logger.info("Found user... Returning User")
+            return result[0][0]
+        else : 
+            logger.warn("Could not find user with uid: " + str(uid))
+            return None
+    except Warning as warn:
+        logger.error("Waring: " + str(warn) + "\nStop\n")
+        return None
