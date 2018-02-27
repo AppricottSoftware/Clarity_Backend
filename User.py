@@ -154,5 +154,5 @@ def updatePassword(uid, newPassword):
         logger.info("Successful connection termination")
         return True
     except Warning as warn: 
-        self.logger.error("Warning: " + str(warn) + "\nStop.\n")
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False

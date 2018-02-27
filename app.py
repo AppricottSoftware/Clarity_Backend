@@ -97,7 +97,6 @@ def do_admin_updatePassword():
     else: 
         return jsonify({u'res': -1}), 400
 
-
 # ------------ Getter & Setters for User Info END ------------
 
 
@@ -180,8 +179,22 @@ def do_admin_PUTChannelsDislikes():
 # ------------ Getter & Setters for Channels Info END ------------
 
 #  ------------ Getter & Setters for Podcast ------------
-@app.route('/GET/podcastSpeed', methods=['POST'])
+@app.route('/GET/podcastSpeed', methods=['GET'])
 def do_admin_GETpodcastSpeed():
+    logger.info("\n\nInvoking admin /GET/podcastSpeed, IP:{} ".format(request.remote_addr))
+    if request.method == "GET":
+        json_dict = request.get_json()  # Creates into a dictionary
+        newUser = User(json_dict)  # Dict will be parsed in constructor
+        res = newUser.getUserPodcastSpeed()
+        if res is not 0: 
+            return jsonify({u'podcastSpeed': res}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
+@app.route('/PUT/podcastSpeed', methods=['POST'])
+def do_admin_PUTpodcastSpeed():
     logger.info("\n\nInvoking admin /GET/podcastSpeed, IP:{} ".format(request.remote_addr))
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
