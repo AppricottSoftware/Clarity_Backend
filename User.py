@@ -10,6 +10,8 @@ class User:
         self.password = userJson["password"]
         self.logger = Log().getLogger()
 
+    # Input: User Object 
+    # Output: User Object's Uid
     def getUserUid(self):
         self.logger.info("\nFinding User Uid, " + self.email + " in database")
         try: 
@@ -27,6 +29,8 @@ class User:
         except Warning as warn:
             self.logger.error("Waring: " + str(warn) + "\nStop\n")
 
+    # Input: User Object 
+    # Output: True = No Dups, False = Conflicting Dup/s
     def checkDuplicateUsers(self): 
         self.logger.info("\nSearching for dup emails: " + self.email)
         try: 
@@ -45,6 +49,9 @@ class User:
             self.logger.error("Waring: " + str(warn) + "\nStop\n")
             return False
 
+    # Input: User Object 
+    # Database: Populate a new user if there are no dups
+    # Output: User Object's Uid
     def registrationUser(self): 
         """\brief: adds or updates the db with the user"""
         self.logger.info("\nUpdating Database")
@@ -64,6 +71,8 @@ class User:
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return None
 
+    # Input: User Object 
+    # Output: User Object's Hashed Password
     def getUserPassword(self) :
         self.logger.info("Running getUserPassword()")
         checkUser = "Select password from users where email=\"" + self.email + "\";"
@@ -78,6 +87,8 @@ class User:
             self.logger.warn("Could not find user " + self.email)
             return 0
 
+    # Input: User Object 
+    # Output: True = Correct user and password, False = Incorrect user and password
     def validateUser(self): 
         self.logger.info("\nValidating User")
         try: 
