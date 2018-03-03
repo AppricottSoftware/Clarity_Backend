@@ -77,8 +77,6 @@ class User:
         self.logger.info("Running getUserPassword()")
         checkUser = "Select password from users where email=\"" + self.email + "\";"
         self.cursor.execute(checkUser)
-
-        self.cursor.execute(checkUser)
         result = self.cursor.fetchall()
         if result : 
             self.logger.info("Found user... Returning User")
@@ -95,8 +93,6 @@ class User:
             self.dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
             self.cursor = self.dbConnection.cursor()
             userRealPassword = self.getUserPassword()
-            print("UserRealPassword: " + userRealPassword)
-            print("CurrentPassword: " + self.password)
             if self.password == userRealPassword: 
                 self.logger.info("Authenication Successful")
                 return True
@@ -107,3 +103,102 @@ class User:
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return False
 
+
+
+
+
+
+def getUserPodcastLength(uid): 
+    logger = Log().getLogger()
+    logger.info("\nRunning getUserPodcastLength()")
+    try:
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        checkUser = "Select podcastLength from users where uid=\"{}\";".format(uid)
+        cursor.execute(checkUser)
+        result = cursor.fetchall()
+        if result : 
+            logger.info("Found Podcast Speed... Returning")
+            return result[0][0]
+        else : 
+            logger.warn("Could not find uid " + uid)
+            return None
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return None
+
+
+def updatePodcastLength(uid, newPodcastLength): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's PodcastLength")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        query = "update users set podcastLength=\"{}\" where uid=\"{}\"".format(newPodcastLength, uid)
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user " + str(uid) + "'s Podcast Speed: " + str(newPodcastLength))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False
+
+
+
+
+
+
+def updateEmail(uid, newEmail): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's Email Address")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        query = "update users set email=\"{}\" where uid=\"{}\"".format(newEmail, uid);
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user's uid: " + str(uid) + " to email: " + str(newEmail))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False
+
+def getUserEmail(uid): 
+    logger = Log().getLogger()
+    logger.info("\nFinding User Email with: {}".format(str(uid)))
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        checkUser = "SELECT email FROM users WHERE uid=\"" + str(uid) + "\";"
+        cursor.execute(checkUser)
+        result = cursor.fetchall()
+        if result : 
+            logger.info("Found user... Returning User")
+            return result[0][0]
+        else : 
+            logger.warn("Could not find user with uid: " + str(uid))
+            return None
+    except Warning as warn:
+        logger.error("Waring: " + str(warn) + "\nStop\n")
+        return None
+
+def updatePassword(uid, newPassword): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's Password")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        query = "update users set password=\"{}\" where uid=\"{}\"".format(newPassword, uid)
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user " + str(uid) + "'s password " + str(newPassword))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False

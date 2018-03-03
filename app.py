@@ -1,10 +1,11 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-from User import User
+
+from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength
 from Channel import Channel, getChannelsByToken, deleteChannelByToken
-from Metadata import Metadata
 from Channel_Metadata import Channel_Metadata
+from Metadata import Metadata
 from Logger import Logger as Log
 
 import cgitb
@@ -21,6 +22,7 @@ logger = Log().getLogger()
 def do_admin_root():
     logger.info("HELLO WORLD IP: {}".format(request.remote_addr))
 
+# ------------ Registration & Login ------------
 @app.route('/register', methods=['POST'])
 def do_admin_register():
     logger.info("\n\nInvoking admin registration IP: {} ".format(request.remote_addr))
@@ -53,10 +55,55 @@ def do_admin_login():
             return jsonify({u'uid': -1}), 401
     else: 
         return jsonify({u'uid': -1}), 400
+# ------------ Registration & Login END ------------
+
+# ------------ Getter & Setters for User Info ------------
+@app.route('/GET/UserEmail', methods=['GET']) 
+def do_admin_GetEmail(): 
+    logger.info("\n\nInvoking do_admin_GetEmail IP: {} ".format(request.remote_addr))
+    if request.method == "GET":
+        json_dict = request.get_json()  # Creates into a dictionary
+        uid = json_dict["uid"]
+        email = getUserEmail(uid)
+        if email is not None: 
+            return jsonify({u'email': email}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
+@app.route('/PUT/emailUpdate', methods=['POST']) 
+def do_admin_updateEmail(): 
+    logger.info("\n\nInvoking updateEmail IP: {} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+
+        if updateEmail(json_dict['uid'], json_dict['newEmail']) is True: 
+            return jsonify({u'res': "SUCCESS"}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
+@app.route('/PUT/passwordUpdate', methods=['POST']) 
+def do_admin_updatePassword(): 
+    logger.info("\n\nInvoking updatePassword IP: {} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+
+        if updatePassword(json_dict['uid'], json_dict['newPassword']) is True:
+            return jsonify({u'res': "SUCCESS"}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
+# ------------ Getter & Setters for User Info END ------------
 
 
+# ------------ Getter & Setters for Channels Info ------------
 @app.route('/GET/channels', methods=['GET', 'POST'])
-def GETChannels():
+def do_admin_GETChannels():
     logger.info("\n\nInvoking admin /GET/channels, IP: {} ".format(request.remote_addr))
     if request.method == "GET":
        userData = request.get_json()
@@ -71,7 +118,7 @@ def GETChannels():
 
 
 @app.route('/PUT/channels', methods=['POST'])
-def PUTChannels():
+def do_admin_PUTChannels():
     logger.info("\n\nInvoking admin /PUT/channels, IP: {} ".format(request.remote_addr))
     if request.method == "POST":
         channelData = request.get_json()
@@ -84,7 +131,7 @@ def PUTChannels():
 
 
 @app.route('/PUT/channels/Likes', methods=['POST'])
-def PUTChannelsLikes():
+def do_admin_PUTChannelsLikes():
     logger.info("\n\nInvoking admin /PUT/channel/Likes, IP:{} ".format(request.remote_addr))
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
@@ -108,7 +155,7 @@ def PUTChannelsLikes():
 
 
 @app.route('/PUT/channels/Dislikes', methods=['POST'])
-def PUTChannelsDislikes():
+def do_admin_PUTChannelsDislikes():
     logger.info("\n\nInvoking admin /PUT/channel/Dislikes, IP:{} ".format(request.remote_addr))
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
@@ -130,6 +177,36 @@ def PUTChannelsDislikes():
     else: 
         return jsonify({u"result": "FAILURE"}), 400
 
+# ------------ Getter & Setters for Channels Info END ------------
+
+
+#  ------------ Getter & Setters for Podcast ------------
+@app.route('/GET/podcastLength', methods=['GET'])
+def do_admin_GETpodcastLength():
+    logger.info("\n\nInvoking admin /GET/podcastLength, IP:{} ".format(request.remote_addr))
+    if request.method == "GET":
+        json_dict = request.get_json()  # Creates into a dictionary
+        res = getUserPodcastLength(json_dict["uid"])
+        if res is not None: 
+            return jsonify({u'podcastLength': res}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
+@app.route('/PUT/podcastLength', methods=['POST'])
+def do_admin_PUTpodcastLength():
+    logger.info("\n\nInvoking admin /GET/podcastLength, IP:{} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+        if updatePodcastLength(json_dict["uid"], json_dict["podcastLength"]) is True:
+            return jsonify({u"result": "SUCCESS"}), 200
+        else: 
+            return jsonify({u"result": "FAILURE"}), 200
+    else: 
+        return jsonify({u"result": "FAILURE"}), 400
+
+#  ------------ Getter & Setters for Podcast END------------
 
 @app.route('/PUT/channels/Delete', methods=['POST'])
 def DeleteChannels():
