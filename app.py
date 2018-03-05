@@ -177,6 +177,20 @@ def do_admin_PUTChannelsDislikes():
     else: 
         return jsonify({u"result": "FAILURE"}), 400
 
+
+@app.route('/PUT/channels/Delete', methods=['POST'])
+def DeleteChannels():
+    logger.info("\n\nInvoking /PUT/channels/Delete, IP: {} ".format(request.remote_addr))
+    if request.method == "POST":
+       userData = request.get_json()
+       channels = deleteChannelByToken(userData["uid"], userData["cid"])
+       if channels is not None:
+           return jsonify(channels), 200
+       else:
+           return jsonify({u'cid': -1}), 500
+    else:
+        return jsonify({u'cid': -1}), 400
+
 # ------------ Getter & Setters for Channels Info END ------------
 
 
@@ -206,21 +220,28 @@ def do_admin_PUTpodcastLength():
     else: 
         return jsonify({u"result": "FAILURE"}), 400
 
-#  ------------ Getter & Setters for Podcast END------------
+#  ------------ Getter & Setters for Podcast END ------------
 
-@app.route('/PUT/channels/Delete', methods=['POST'])
-def DeleteChannels():
-    logger.info("\n\nInvoking /PUT/channels/Delete, IP: {} ".format(request.remote_addr))
-    if request.method == "POST":
-       userData = request.get_json()
-       channels = deleteChannelByToken(userData["uid"], userData["cid"])
-       if channels is not None:
-           return jsonify(channels), 200
-       else:
-           return jsonify({u'cid': -1}), 500
-    else:
-        return jsonify({u'cid': -1}), 400
 
+#  ------------ Getter & Setters for Public APIs ------------
+
+@app.route('/GET/listenNotesApi', methods=['POST'])
+def do_admin_GETlistenNotesApi():
+    logger.info("\n\nInvoking admin /GET/listenNotesApi, IP:{} ".format(request.remote_addr))
+    if request.method == "GET":
+        json_dict = request.get_json()  # Creates into a dictionary
+        if updatePodcastLength(json_dict["uid"], json_dict["podcastLength"]) is True:
+            return jsonify({u"result": "SUCCESS"}), 200
+        else: 
+            return jsonify({u"result": "FAILURE"}), 200
+    else: 
+        return jsonify({u"result": "FAILURE"}), 400
+
+
+
+
+
+#  ------------ Getter & Setters for Public APIs END ------------
 
 if __name__ == "__main__":
     print("SERVER ON!!!\n\n")
