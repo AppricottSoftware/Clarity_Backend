@@ -61,8 +61,14 @@ class Channel:
             self.logger.error("Warning: " + str(warn) + "\nStop.\n")
             return None
 
+
+
+# Non Class Members 
 def getChannelsByToken(token):
     # Should return a dictionary that represents all channels assocated with the given token
+    logger = Log().getLogger()
+    logger.info("\n Getting Channels By Token: {}".format(str(token)))
+
     try:
         dbConnection = pymysql.connect(host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database)
         with dbConnection.cursor(pymysql.cursors.DictCursor) as cursor:
@@ -75,6 +81,21 @@ def getChannelsByToken(token):
                                         "WHERE C.cid = \"{}\" AND C.mid = M.mid").format(str(channel["cid"]))
                 cursor.execute(queryChannelMetadata)
                 channel["metadata"] = cursor.fetchall()
-        return channels
+            logger.info("Returning channels: {}".format(str(channels)))
+            return channels
+    except Warning as warn:
+        return None
+
+def deleteChannelByToken(tokenUid, tokenCid):
+    # Should delete a channel
+    logger = Log().getLogger()
+    logger.info("\n Deleting Channels By Uid: {} & Cid: {}".format(str(tokenUid), str(tokenCid)))
+    try:
+        dbConnection = pymysql.connect(host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database)
+        cursor = dbConnection.cursor()
+        queryChannels = ("DELETE FROM `channel` WHERE `cid` = \"{}\"").format(str(tokenCid))
+        cursor.execute(queryChannels)   
+        dbConnection.commit()
+        return 1
     except Warning as warn:
         return None

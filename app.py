@@ -2,9 +2,9 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os
 import settings
 from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength, getPlaybackSpeed, updatePlaybackSpeed
-from Channel import Channel, getChannelsByToken
-from Metadata import Metadata
+from Channel import Channel, getChannelsByToken, deleteChannelByToken
 from Channel_Metadata import Channel_Metadata
+from Metadata import Metadata
 from Logger import Logger as Log
 
 import cgitb
@@ -178,6 +178,7 @@ def do_admin_PUTChannelsDislikes():
 
 # ------------ Getter & Setters for Channels Info END ------------
 
+
 #  ------------ Getter & Setters for Podcast ------------
 @app.route('/GET/podcastLength', methods=['GET'])
 def do_admin_GETpodcastLength():
@@ -230,6 +231,20 @@ def do_admin_PUTplaybackSpeed():
         return jsonify({u"result": "FAILURE"}), 400
 
 #  ------------ Getter & Setters for Podcast END------------
+
+@app.route('/PUT/channels/Delete', methods=['POST'])
+def DeleteChannels():
+    logger.info("\n\nInvoking /PUT/channels/Delete, IP: {} ".format(request.remote_addr))
+    if request.method == "POST":
+       userData = request.get_json()
+       channels = deleteChannelByToken(userData["uid"], userData["cid"])
+       if channels is not None:
+           return jsonify(channels), 200
+       else:
+           return jsonify({u'cid': -1}), 500
+    else:
+        return jsonify({u'cid': -1}), 400
+
 
 if __name__ == "__main__":
     print("SERVER ON!!!\n\n")
