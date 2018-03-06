@@ -104,10 +104,7 @@ class User:
             return False
 
 
-
-
-
-
+# ------------ Nonclass Members ------------
 def getUserPodcastLength(uid): 
     logger = Log().getLogger()
     logger.info("\nRunning getUserPodcastLength()")
@@ -127,7 +124,6 @@ def getUserPodcastLength(uid):
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return None
 
-
 def updatePodcastLength(uid, newPodcastLength): 
     logger = Log().getLogger()
     logger.info("\nUpdating User's PodcastLength")
@@ -144,11 +140,6 @@ def updatePodcastLength(uid, newPodcastLength):
     except Warning as warn: 
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
-
-
-
-
-
 
 def updateEmail(uid, newEmail): 
     logger = Log().getLogger()
@@ -202,3 +193,21 @@ def updatePassword(uid, newPassword):
     except Warning as warn: 
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
+
+def deleteAccount(uid): 
+    logger = Log().getLogger()
+    logger.info("\nDeleting User's Account :(")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        query = "delete from users where uid=\"{}\"".format(uid)
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful deletion to user with Uid: ".format(uid))
+        dbConnection.close()
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False
+
+# ------------ Nonclass Members END ------------
