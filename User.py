@@ -104,6 +104,7 @@ class User:
             return False
 
 
+# ------------ Nonclass Members ------------
 def getUserPodcastLength(uid): 
     logger = Log().getLogger()
     logger.info("\nRunning getUserPodcastLength()")
@@ -123,7 +124,6 @@ def getUserPodcastLength(uid):
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return None
 
-
 def updatePodcastLength(uid, newPodcastLength): 
     logger = Log().getLogger()
     logger.info("\nUpdating User's PodcastLength")
@@ -141,7 +141,6 @@ def updatePodcastLength(uid, newPodcastLength):
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
 
-
 def updateEmail(uid, newEmail): 
     logger = Log().getLogger()
     logger.info("\nUpdating User's Email Address")
@@ -158,7 +157,6 @@ def updateEmail(uid, newEmail):
     except Warning as warn: 
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
-
 
 def getUserEmail(uid): 
     logger = Log().getLogger()
@@ -179,7 +177,6 @@ def getUserEmail(uid):
         logger.error("Waring: " + str(warn) + "\nStop\n")
         return None
 
-
 def updatePassword(uid, newPassword): 
     logger = Log().getLogger()
     logger.info("\nUpdating User's Password")
@@ -197,7 +194,6 @@ def updatePassword(uid, newPassword):
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
 
-
 def deleteAccount(uid): 
     logger = Log().getLogger()
     logger.info("\nDeleting User's Account :(")
@@ -213,3 +209,5 @@ def deleteAccount(uid):
     except Warning as warn: 
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
+
+# ------------ Nonclass Members END ------------

@@ -62,8 +62,7 @@ class Channel:
             return None
 
 
-
-# Non Class Members 
+# ------------ Nonclass Members ------------
 def getChannelsByToken(token):
     # Should return a dictionary that represents all channels assocated with the given token
     logger = Log().getLogger()
@@ -99,3 +98,5 @@ def deleteChannelByToken(tokenUid, tokenCid):
         return 1
     except Warning as warn:
         return None
+
+# ------------ Nonclass Members END ------------
