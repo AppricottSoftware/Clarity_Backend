@@ -1,7 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength, getPlaybackSpeed, updatePlaybackSpeed
+from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength, getPlaybackSpeed, updatePlaybackSpeed, deleteAccount
 from Channel import Channel, getChannelsByToken, deleteChannelByToken
 from Channel_Metadata import Channel_Metadata
 from Metadata import Metadata
@@ -40,7 +40,6 @@ def do_admin_register():
     else:
         return jsonify({u'uid': -1}), 400 
 
-
 @app.route('/login', methods=['POST'])
 def do_admin_login():
     logger.info("\n\nInvoking admin login IP: {} ".format(request.remote_addr))
@@ -54,6 +53,7 @@ def do_admin_login():
             return jsonify({u'uid': -1}), 401
     else: 
         return jsonify({u'uid': -1}), 400
+
 # ------------ Registration & Login END ------------
 
 # ------------ Getter & Setters for User Info ------------
@@ -97,6 +97,19 @@ def do_admin_updatePassword():
     else: 
         return jsonify({u'res': -1}), 400
 
+@app.route('/PUT/deleteAccount', methods=['POST']) 
+def do_admin_deleteAccount(): 
+    logger.info("\n\nInvoking do_admin_deleteAccount IP: {} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+
+        if deleteAccount(json_dict['uid']) is True:
+            return jsonify({u'res': "SUCCESS"}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+        
 # ------------ Getter & Setters for User Info END ------------
 
 
@@ -115,7 +128,6 @@ def do_admin_GETChannels():
     else:
         return jsonify({u'cid': -1}), 400
 
-
 @app.route('/PUT/channels', methods=['POST'])
 def do_admin_PUTChannels():
     logger.info("\n\nInvoking admin /PUT/channels, IP: {} ".format(request.remote_addr))
@@ -128,6 +140,18 @@ def do_admin_PUTChannels():
     else:
         return jsonify({u'cid': -1}), 400
 
+@app.route('/PUT/channels/Delete', methods=['POST'])
+def DeleteChannels():
+    logger.info("\n\nInvoking /PUT/channels/Delete, IP: {} ".format(request.remote_addr))
+    if request.method == "POST":
+       userData = request.get_json()
+       channels = deleteChannelByToken(userData["uid"], userData["cid"])
+       if channels is not None:
+           return jsonify(channels), 200
+       else:
+           return jsonify({u'cid': -1}), 500
+    else:
+        return jsonify({u'cid': -1}), 400
 
 @app.route('/PUT/channels/Likes', methods=['POST'])
 def do_admin_PUTChannelsLikes():
@@ -151,7 +175,6 @@ def do_admin_PUTChannelsLikes():
         return jsonify({u"result": "SUCCESS"}), 200
     else: 
         return jsonify({u"result": "FAILURE"}), 400
-
 
 @app.route('/PUT/channels/Dislikes', methods=['POST'])
 def do_admin_PUTChannelsDislikes():
@@ -231,19 +254,6 @@ def do_admin_PUTplaybackSpeed():
         return jsonify({u"result": "FAILURE"}), 400
 
 #  ------------ Getter & Setters for Podcast END------------
-
-@app.route('/PUT/channels/Delete', methods=['POST'])
-def DeleteChannels():
-    logger.info("\n\nInvoking /PUT/channels/Delete, IP: {} ".format(request.remote_addr))
-    if request.method == "POST":
-       userData = request.get_json()
-       channels = deleteChannelByToken(userData["uid"], userData["cid"])
-       if channels is not None:
-           return jsonify(channels), 200
-       else:
-           return jsonify({u'cid': -1}), 500
-    else:
-        return jsonify({u'cid': -1}), 400
 
 
 if __name__ == "__main__":
