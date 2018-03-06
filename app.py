@@ -41,7 +41,6 @@ def do_admin_register():
     else:
         return jsonify({u'uid': -1}), 400 
 
-
 @app.route('/login', methods=['POST'])
 def do_admin_login():
     logger.info("\n\nInvoking admin login IP: {} ".format(request.remote_addr))
@@ -55,6 +54,7 @@ def do_admin_login():
             return jsonify({u'uid': -1}), 401
     else: 
         return jsonify({u'uid': -1}), 400
+
 # ------------ Registration & Login END ------------
 
 # ------------ Getter & Setters for User Info ------------
@@ -98,7 +98,6 @@ def do_admin_updatePassword():
     else: 
         return jsonify({u'res': -1}), 400
 
-
 @app.route('/PUT/deleteAccount', methods=['POST']) 
 def do_admin_deleteAccount(): 
     logger.info("\n\nInvoking do_admin_deleteAccount IP: {} ".format(request.remote_addr))
@@ -111,9 +110,7 @@ def do_admin_deleteAccount():
             return jsonify({u'res': -1}), 401
     else: 
         return jsonify({u'res': -1}), 400
-
-
-
+        
 # ------------ Getter & Setters for User Info END ------------
 
 
@@ -131,7 +128,6 @@ def do_admin_GETChannels():
            return jsonify({u'cid': -1}), 500
     else:
         return jsonify({u'cid': -1}), 400
-
 
 @app.route('/PUT/channels', methods=['POST'])
 def do_admin_PUTChannels():
@@ -180,7 +176,6 @@ def do_admin_PUTChannelsLikes():
         return jsonify({u"result": "SUCCESS"}), 200
     else: 
         return jsonify({u"result": "FAILURE"}), 400
-
 
 @app.route('/PUT/channels/Dislikes', methods=['POST'])
 def do_admin_PUTChannelsDislikes():

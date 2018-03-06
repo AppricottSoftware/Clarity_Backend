@@ -104,10 +104,6 @@ class User:
             return False
 
 
-
-
-
-
 def getUserPodcastLength(uid): 
     logger = Log().getLogger()
     logger.info("\nRunning getUserPodcastLength()")
@@ -146,10 +142,6 @@ def updatePodcastLength(uid, newPodcastLength):
         return False
 
 
-
-
-
-
 def updateEmail(uid, newEmail): 
     logger = Log().getLogger()
     logger.info("\nUpdating User's Email Address")
@@ -166,6 +158,7 @@ def updateEmail(uid, newEmail):
     except Warning as warn: 
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
+
 
 def getUserEmail(uid): 
     logger = Log().getLogger()
@@ -185,6 +178,7 @@ def getUserEmail(uid):
     except Warning as warn:
         logger.error("Waring: " + str(warn) + "\nStop\n")
         return None
+
 
 def updatePassword(uid, newPassword): 
     logger = Log().getLogger()
