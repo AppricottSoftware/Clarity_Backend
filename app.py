@@ -1,8 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-
-from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength, deleteAccount
+from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength, getPlaybackSpeed, updatePlaybackSpeed, deleteAccount
 from Channel import Channel, getChannelsByToken, deleteChannelByToken
 from Channel_Metadata import Channel_Metadata
 from Metadata import Metadata
@@ -223,6 +222,31 @@ def do_admin_PUTpodcastLength():
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         if updatePodcastLength(json_dict["uid"], json_dict["podcastLength"]) is True:
+            return jsonify({u"result": "SUCCESS"}), 200
+        else: 
+            return jsonify({u"result": "FAILURE"}), 200
+    else: 
+        return jsonify({u"result": "FAILURE"}), 400
+
+@app.route('/GET/playbackSpeed', methods=['GET'])
+def do_admin_GETplaybackSpeed():
+    logger.info("\n\nInvoking admin /GET/playbackSpeed, IP:{} ".format(request.remote_addr))
+    if request.method == "GET":
+        json_dict = request.get_json()  # Creates into a dictionary
+        res = getPlaybackSpeed(json_dict["uid"])
+        if res is not None: 
+            return jsonify({u'playbackSpeed': res}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
+@app.route('/PUT/playbackSpeed', methods=['POST'])
+def do_admin_PUTplaybackSpeed():
+    logger.info("\n\nInvoking admin /PUT/playbackSpeed, IP:{} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+        if updatePlaybackSpeed(json_dict["uid"], json_dict["playbackSpeed"]) is True:
             return jsonify({u"result": "SUCCESS"}), 200
         else: 
             return jsonify({u"result": "FAILURE"}), 200

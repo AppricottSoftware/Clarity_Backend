@@ -141,6 +141,43 @@ def updatePodcastLength(uid, newPodcastLength):
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
 
+def getPlaybackSpeed(uid): 
+    logger = Log().getLogger()
+    logger.info("\nRunning getPlaybackSpeed()")
+    try:
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        checkUser = "select playbackSpeed from users where uid=\"{}\";".format(uid)
+        cursor.execute(checkUser)
+        result = cursor.fetchall()
+        if result : 
+            logger.info("Found Playback Speed... Returning")
+            return result[0][0]
+        else : 
+            logger.warn("Could not find uid " + str(uid))
+            return None
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return None
+
+def updatePlaybackSpeed(uid, newPlaybackSpeed): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's PlaybackSpeed")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        logger.info(str(newPlaybackSpeed))
+        query = "update users set playbackSpeed=\"{}\" where uid=\"{}\"".format(newPlaybackSpeed, uid)
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user " + str(uid) + "'s Playback Speed: " + str(newPlaybackSpeed))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False
+
 def updateEmail(uid, newEmail): 
     logger = Log().getLogger()
     logger.info("\nUpdating User's Email Address")
