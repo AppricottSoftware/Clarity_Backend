@@ -95,7 +95,7 @@ def deleteChannelByToken(tokenUid, tokenCid):
         queryChannels = ("DELETE FROM `channel` WHERE `cid` = \"{}\"").format(str(tokenCid))
         cursor.execute(queryChannels)   
         dbConnection.commit()
-        return 1
+        return getChannelsByToken(tokenUid) 
     except Warning as warn:
         return None
 
