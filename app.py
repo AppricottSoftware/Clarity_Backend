@@ -1,7 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength, getPlaybackSpeed, updatePlaybackSpeed, deleteAccount, getCurrentChannel, updateCurrentChannel
+from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength, getPlaybackSpeed, updatePlaybackSpeed, deleteAccount, getCurrentChannel, updateCurrentChannel, getUserSortByDate, updateSortByDate
 from Channel import Channel, getChannelsByToken, deleteChannelByToken, getChannelByCid
 from Channel_Metadata import Channel_Metadata
 from Metadata import Metadata
@@ -203,6 +203,32 @@ def do_admin_PUTChannelsDislikes():
 
 
 #  ------------ Getter & Setters for Podcast ------------
+@app.route('/GET/sortByDate', methods=['GET'])
+def do_admin_GETsortByDate():
+    logger.info("\n\nInvoking admin /GET/sortByDate, IP:{} ".format(request.remote_addr))
+    if request.method == "GET":
+        json_dict = request.get_json()  # Creates into a dictionary
+        res = getUserSortByDate(json_dict["uid"])
+        if res is not None: 
+            return jsonify({u'sortByDate': res}), 200
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
+@app.route('/PUT/sortByDate', methods=['POST'])
+def do_admin_PUTsortByDate():
+    logger.info("\n\nInvoking admin /POST/sortByDate, IP:{} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+        logger.info(str(json_dict))
+        if updateSortByDate(json_dict["uid"], json_dict["sortByDate"]) is True:
+            return jsonify({u"result": "SUCCESS"}), 200
+        else: 
+            return jsonify({u"result": "FAILURE"}), 200
+    else: 
+        return jsonify({u"result": "FAILURE"}), 400
+
 @app.route('/GET/podcastLength', methods=['GET'])
 def do_admin_GETpodcastLength():
     logger.info("\n\nInvoking admin /GET/podcastLength, IP:{} ".format(request.remote_addr))
