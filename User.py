@@ -105,6 +105,42 @@ class User:
 
 
 # ------------ Nonclass Members ------------
+def getUserSortByDate(uid): 
+    logger = Log().getLogger()
+    logger.info("\nRunning getUserSortByDate()")
+    try:
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        checkUser = "Select sortByDate from users where uid=\"{}\";".format(uid)
+        cursor.execute(checkUser)
+        result = cursor.fetchall()
+        if result : 
+            logger.info("Found sortByDate... Returning")
+            return result[0][0]
+        else : 
+            logger.warn("Could not find uid " + uid)
+            return None
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return None
+
+def updateSortByDate(uid, newSortByDate): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's SortByDate")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        query = "update users set sortByDate=\"{}\" where uid=\"{}\"".format(newSortByDate, uid)
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user " + str(uid) + "'s sortByDate: " + str(newSortByDate))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False
+
 def getUserPodcastLength(uid): 
     logger = Log().getLogger()
     logger.info("\nRunning getUserPodcastLength()")
