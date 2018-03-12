@@ -99,4 +99,38 @@ def deleteChannelByToken(tokenUid, tokenCid):
     except Warning as warn:
         return None
 
+def getChannelByCid(cid):
+    # Should return a dictionary that represents all channels assocated with the given token
+    logger = Log().getLogger()
+    logger.info("\nGetting Channel By CID: {}".format(str(cid)))
+    try:
+        dbConnection = pymysql.connect(host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database)
+        with dbConnection.cursor(pymysql.cursors.DictCursor) as cursor:
+
+            # queryChannels = ("SELECT * FROM `channel` WHERE `cid` = \"{}\"").format(str(cid))
+            # cursor.execute(queryChannels)
+            # channels = cursor.fetchall()
+            # for channel in channels:
+            #     queryChannelMetadata = ("SELECT M.genre, M.mid, C.score "
+            #                             "FROM channel_metadata C, metadata M "
+            #                             "WHERE C.cid = \"{}\" AND C.mid = M.mid").format(str(channel["cid"]))
+            #     cursor.execute(queryChannelMetadata)
+            #     channel["metadata"] = cursor.fetchall()
+            # logger.info("Returning channels: {}".format(str(channels)))
+            # return channels
+
+            queryChannels = ("SELECT * FROM `channel` WHERE `cid` = \"{}\"").format(str(cid))
+            cursor.execute(queryChannels)
+            channel = cursor.fetchone()
+            logger.info("Fetched channel " + str(channel))
+            queryChannelMetadata = ("SELECT M.genre, M.mid, C.score "
+                "FROM channel_metadata C, metadata M "
+                "WHERE C.cid = \"{}\" AND C.mid = M.mid").format(str(cid))
+            cursor.execute(queryChannelMetadata)
+            channel["metadata"] = cursor.fetchall()
+            logger.info("Returning channels: {}".format(str(channel)))
+            return channel
+    except Warning as warn:
+        return None
+
 # ------------ Nonclass Members END ------------

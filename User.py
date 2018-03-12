@@ -178,6 +178,43 @@ def updatePlaybackSpeed(uid, newPlaybackSpeed):
         logger.error("Warning: " + str(warn) + "\nStop.\n")
         return False
 
+def getCurrentChannel(uid): 
+    logger = Log().getLogger()
+    logger.info("\nRunning getCurrentChannel()")
+    try:
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        checkUser = "select currentChannel from users where uid=\"{}\";".format(uid)
+        cursor.execute(checkUser)
+        result = cursor.fetchall()
+        if result : 
+            logger.info("Found Channel Id.. Returning " + str(result[0][0]))
+            return result[0][0]
+        else : 
+            logger.warn("Could not find uid " + str(uid))
+            return None
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return None
+
+def updateCurrentChannel(uid, newCurrentChannel): 
+    logger = Log().getLogger()
+    logger.info("\nUpdating User's Current Channel")
+    try: 
+        dbConnection = pymysql.connect( host=settings.hostname, user=settings.username, passwd=settings.password, db=settings.database )
+        cursor = dbConnection.cursor()
+        logger.info(str(newCurrentChannel))
+        query = "update users set currentChannel=\"{}\" where uid=\"{}\"".format(newCurrentChannel, uid)
+        cursor.execute(query)
+        dbConnection.commit() # Required to commit changes to the actual database
+        logger.info("Successful update to user " + str(uid) + "'s Current Channel: " + str(newCurrentChannel))
+        dbConnection.close()
+        logger.info("Successful connection termination")
+        return True
+    except Warning as warn: 
+        logger.error("Warning: " + str(warn) + "\nStop.\n")
+        return False
+
 def updateEmail(uid, newEmail): 
     logger = Log().getLogger()
     logger.info("\nUpdating User's Email Address")

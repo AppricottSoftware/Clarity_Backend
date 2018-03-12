@@ -1,8 +1,8 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 import os
 import settings
-from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength, getPlaybackSpeed, updatePlaybackSpeed, deleteAccount
-from Channel import Channel, getChannelsByToken, deleteChannelByToken
+from User import User, getUserEmail, updateEmail, updatePassword, getUserPodcastLength, updatePodcastLength, getPlaybackSpeed, updatePlaybackSpeed, deleteAccount, getCurrentChannel, updateCurrentChannel
+from Channel import Channel, getChannelsByToken, deleteChannelByToken, getChannelByCid
 from Channel_Metadata import Channel_Metadata
 from Metadata import Metadata
 from Logger import Logger as Log
@@ -247,6 +247,35 @@ def do_admin_PUTplaybackSpeed():
     if request.method == "POST":
         json_dict = request.get_json()  # Creates into a dictionary
         if updatePlaybackSpeed(json_dict["uid"], json_dict["playbackSpeed"]) is True:
+            return jsonify({u"result": "SUCCESS"}), 200
+        else: 
+            return jsonify({u"result": "FAILURE"}), 200
+    else: 
+        return jsonify({u"result": "FAILURE"}), 400
+
+@app.route('/GET/currentChannel', methods=['GET'])
+def do_admin_GETcurrentChannel():
+    logger.info("\n\nInvoking admin /GET/currentChannel, IP:{} ".format(request.remote_addr))
+    if request.method == "GET":
+        json_dict = request.get_json()  # Creates into a dictionary
+        cid = getCurrentChannel(json_dict["uid"])
+        if cid is not None: 
+            res = getChannelByCid(cid)
+            if res is not None:
+                return jsonify({u'currentChannel': res}), 200
+            else:
+                return jsonify({u'res': -1}), 401
+        else: 
+            return jsonify({u'res': -1}), 401
+    else: 
+        return jsonify({u'res': -1}), 400
+
+@app.route('/PUT/currentChannel', methods=['POST'])
+def do_admin_PUTcurrentChannel():
+    logger.info("\n\nInvoking admin /PUT/currentChannel, IP:{} ".format(request.remote_addr))
+    if request.method == "POST":
+        json_dict = request.get_json()  # Creates into a dictionary
+        if updateCurrentChannel(json_dict["uid"], json_dict["currentChannel"]) is True:
             return jsonify({u"result": "SUCCESS"}), 200
         else: 
             return jsonify({u"result": "FAILURE"}), 200
